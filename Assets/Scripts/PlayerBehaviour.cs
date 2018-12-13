@@ -9,6 +9,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     //Create GetterSetter for Public Variables
     public InputManager Input { get; set; }
+
     private PickUpStateMachine _smb;
 
     public enum States
@@ -46,8 +47,11 @@ public class PlayerBehaviour : MonoBehaviour {
     public bool PickingUp { get; set; }
     private bool _canThrow;
 
-    private AnimatorStateInfo _animInfo;
-
+    #region IKproperties
+    private Transform _rightHand;
+    private float _rightHandWeight;
+    private Vector3 _rightHandPos;
+    #endregion
     void Start ()
         {
         //Set Components;
@@ -61,6 +65,11 @@ public class PlayerBehaviour : MonoBehaviour {
         _smb._bps = this;
 
         State = States.Walking;
+
+        #region setIK
+        _rightHand = _anim.GetBoneTransform(HumanBodyBones.RightHand);
+        #endregion
+
 
         #region Dependencies
         //dependency error if charactercontroller is not attached
@@ -122,19 +131,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
         
             DoMovement();
-            
-            //Check ExitState
-             //if (_pickingUp == true)
-             //{   
-             //   if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Exit"))
-             //   {
-             //       Debug.Log("Exiting PickUp Animation");
-             //       _smb.OnStateExit(_anim, _animInfo, 0);
-             //       _pickingUp = false;
-                    
-             //   }
-             //}
-        Debug.Log(PickingUp);
+
+
         }
 
     //Get relative direction from camera
@@ -246,11 +244,25 @@ public class PlayerBehaviour : MonoBehaviour {
         //Allow player to start throwing pickup;
         PickingUp = true;
         State = States.PickingUp;
-        _animInfo = _anim.GetCurrentAnimatorStateInfo(0);
         
     }
 
-    
+    private void OnAnimatorIK(int layerIndex)
+    {
+        Debug.Log("Entering OnAnimatorIK");
+
+        float distanceToObject = Vector3.Distance(_anim.GetBoneTransform(HumanBodyBones.RightHand).position, _currentPickup.transform.position);
+        _rightHandWeight = Mathf.Clamp01(1 - distanceToObject);
+
+        _anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+
+        _anim.SetIKPosition(AvatarIKGoal.RightHand, _rightHand.position);
+
+
+       
+
+    }
+
     //Found On Internet - Not Mine
     //Function to clamp angles | Used to clamp rotation of camera
     public static float ClampAngle(float angle, float min, float max)
