@@ -20,7 +20,7 @@ public class RotateWithMouse : MonoBehaviour {
 
         Vector3 rotationCamePivot =_camPivot.transform.localEulerAngles;
         rotationCamePivot.x += Input.GetAxis("Mouse Y") * -_speed;
-        rotationCamePivot.x = BasePlayerScript.ClampAngle(rotationCamePivot.x, -10, 50);
+        rotationCamePivot.x = PlayerBehaviour.ClampAngle(rotationCamePivot.x, -10, 50);
         _camPivot.localEulerAngles = rotationCamePivot;
 
         

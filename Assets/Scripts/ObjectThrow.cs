@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Assertions;
 
 public class ObjectThrow : MonoBehaviour {
 
     private LineRenderer _line;
+
     [SerializeField]
     private float _v0 = 10; //Start Velocity
     private float _dis; // Distance
@@ -29,7 +31,7 @@ public class ObjectThrow : MonoBehaviour {
 
     //public Canvas Canvas;
     void Start () {
-
+        //Get Linerenderer on Cube (move to Player?)
         _line = this.gameObject.GetComponent<LineRenderer>();
         _line.startWidth = 0.2f;
         _line.endWidth = 0.2f;
@@ -37,25 +39,27 @@ public class ObjectThrow : MonoBehaviour {
         //Set _g to downwards gravity in scene | 9.81 [m/s2]
         _g = -Physics.gravity.y;
 
+        //Get the original position of the cube
         _originalPosition = this.gameObject.transform.position;
 
         CalculateDistance();
-        //CheckObjectCollision();
+
+        #region Dependencies
+        //dependency error if charactercontroller is not attached
+#if DEBUG
+        Assert.IsNotNull(_line, "DEPENDENCY ERROR: LineRenderer is missing from ObjectThrow Script");
+#endif
+        #endregion
     }
-	
-	void Update () {
+
+    void Update () {
 
         //As long as the object isn't colliding with anything, continue the parabole track
         if(_colliding==false)
         {
-        //Calculate distance | this will change when _v0 (Throwing power) get increased
         CalculateDistance();
-        //Update the position of the cube according to the parabola
         UpdatePosition();
-        //Add step so next update cube will take next position
         AddSteps();
-
-        //Draw the parabola that will visualize where cube would land
         DrawParabola();
         }
 	}
@@ -74,21 +78,34 @@ public class ObjectThrow : MonoBehaviour {
         _allowCollision = true;
     }
 
+    //Calculate distance | this will change when _v0 (Throwing power) get increased
     private void CalculateDistance()
     {
         _dis = (Mathf.Pow(_v0, 2) * Mathf.Sin(2 * (_angle * Mathf.PI / 180))) / _g; //x = (v0^2 * sin(2*alpha)) / g
     }
 
+    //Update the position of the cube according to the parabola
     private void UpdatePosition()
     {
         ////Set new position
         this.gameObject.transform.position = StepPosCalculation(_currentStep);
     }
 
+    //Add step so next update cube will take next position
     private void AddSteps()
     {
         //Add 1 to current steps      
         _currentStep++;   
+    }
+
+    //Draw the parabola that will visualize where cube would land
+    private void DrawParabola()
+    {
+        _line.positionCount = _maxStep+(_maxStep/2);
+        for (int i = 0; i < _line.positionCount; i++)
+        {
+            _line.SetPosition(i, StepPosCalculation(i));
+        }
     }
 
     private Vector3 StepPosCalculation(int step)
@@ -105,15 +122,6 @@ public class ObjectThrow : MonoBehaviour {
         Vector3 newPos = new Vector3(_newX, _newY+1f, _newZ);
 
         return newPos;
-    }
-
-    private void DrawParabola()
-    {
-        _line.positionCount = _maxStep+(_maxStep/2);
-        for (int i = 0; i < _line.positionCount; i++)
-        {
-            _line.SetPosition(i, StepPosCalculation(i));
-        }
     }
   
     /* private void CheckFinalPosition(RaycastHit hitinfo)

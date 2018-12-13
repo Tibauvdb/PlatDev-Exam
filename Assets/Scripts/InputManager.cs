@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour{
-    [HideInInspector]
+
     #region Input
     public string HorizontalAxis = "Horizontal";
     public string VerticalAxis = "Vertical";

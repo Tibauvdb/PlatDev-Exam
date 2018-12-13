@@ -5,18 +5,24 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 //[RequireComponent(typeof(CharacterController))]
-public class BasePlayerScript : MonoBehaviour { 
-    public InputManager _input;
+public class PlayerBehaviour : MonoBehaviour { 
 
-    public enum State
+    //Create GetterSetter for Public Variables
+    public InputManager Input { get; set; }
+    private PickUpStateMachine _smb;
+
+    public enum States
     {
         Walking,
         Stairs,
-        PushingBox
+        PushingBox,
+        PickingUp
     }
-    //Create state and set Base state to walking
-    public State state = State.Walking;
+
+    //Create state
+    public States State { get; set; }
     
+
     [SerializeField] private float _acceleration; //[m/s2]
     [SerializeField] private float _drag;
     [SerializeField] private float _maximumXZVelocity = (30 * 1000) / (60 * 60); //[m/s] 30km/h
@@ -27,30 +33,39 @@ public class BasePlayerScript : MonoBehaviour {
     private CharacterController _char;
     private Animator _anim;
 
-    [HideInInspector] public Vector3 Velocity = Vector3.zero; // [m/s]
+    public Vector3 Velocity = Vector3.zero; // [m/s]
 
-    [HideInInspector] public Vector3 InputMovementBase;
-    [HideInInspector] public Vector3 InputMovementBoxPushing;
+    [HideInInspector] public Vector3 InputMovementBase { get; set; }
+    [HideInInspector] public Vector3 InputMovementBoxPushing { get; set; }
 
     private bool _pushBox = false;
-    public RaycastHit Hit;
+
+    public RaycastHit Hit { get; set; }
 
     private GameObject _currentPickup;
-    private bool _pickingUp;
+    public bool PickingUp { get; set; }
     private bool _canThrow;
+
+    private AnimatorStateInfo _animInfo;
 
     void Start ()
         {
-        //attach components
-        _char = GetComponent<CharacterController>();
+        //Set Components;
+        _char = this.gameObject.GetComponent<CharacterController>();
         _absoluteTransform = Camera.main.transform;
         _anim = transform.GetChild(0).GetComponent<Animator>();
-        _input = GameObject.Find("GameManager").GetComponent<InputManager>();
+        Input = GameObject.Find("GameManager").GetComponent<InputManager>();
+        //Set stateMachineBehaviour
+
+        _smb = _anim.GetBehaviour<PickUpStateMachine>();
+        _smb._bps = this;
+
+        State = States.Walking;
 
         #region Dependencies
         //dependency error if charactercontroller is not attached
 #if DEBUG
-        Assert.IsNotNull(_char, "DEPENDENCY ERROR: CharacterController missing from PlayerScript");
+        Assert.IsNotNull(_char, "DEPENDENCY ERROR: CharacterController is missing from PlayerBehaviour");
 #endif
         #endregion
 
@@ -58,16 +73,16 @@ public class BasePlayerScript : MonoBehaviour {
 
     private void Update()
         {
-            //Get input from Any Horizontal or Vertical Axis
-            //Normalize
-            InputMovementBase = new Vector3(Input.GetAxis(_input.HorizontalAxis), 0, Input.GetAxis(_input.VerticalAxis)).normalized;  //Used for base movement
+        //Get input from Any Horizontal or Vertical Axis
+        //Normalize
+        InputMovementBase = new Vector3(UnityEngine.Input.GetAxis(Input.HorizontalAxis), 0, UnityEngine.Input.GetAxis(Input.VerticalAxis)).normalized;  //Used for base movement
 
            /* if (Input.GetButtonDown(_input.A))
             {
                // _pushBox = true;
             }*/
 
-            if (Input.GetAxis(_input.Triggers) > 0)
+            if (UnityEngine.Input.GetAxis(Input.Triggers) > 0)
             {
                 
             }
@@ -82,7 +97,7 @@ public class BasePlayerScript : MonoBehaviour {
             ApplyGround();
             ApplyGravity();
 
-            if(state == State.Walking)
+            if(State == States.Walking)
             {
                 ApplyMovementBase();
             }
@@ -98,19 +113,33 @@ public class BasePlayerScript : MonoBehaviour {
             Vector3 XZvel = Vector3.Scale(Velocity, new Vector3(1, 0, 1));
             Vector3 localVelXZ = gameObject.transform.InverseTransformDirection(XZvel);
 
+            #region SetAnimatorProperties
             _anim.SetFloat("VerticalVelocity", (localVelXZ.z * (_drag)) / _maximumXZVelocity);
             _anim.SetFloat("HorizontalVelocity", (localVelXZ.x * (_drag)) / _maximumXZVelocity);
 
-            _anim.SetBool("PickUpObject", _pickingUp);
+            _anim.SetBool("PickUpObject", PickingUp);
+            #endregion
 
-            DoMovement();
         
+            DoMovement();
+            
+            //Check ExitState
+             //if (_pickingUp == true)
+             //{   
+             //   if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Exit"))
+             //   {
+             //       Debug.Log("Exiting PickUp Animation");
+             //       _smb.OnStateExit(_anim, _animInfo, 0);
+             //       _pickingUp = false;
+                    
+             //   }
+             //}
+        Debug.Log(PickingUp);
         }
 
     //Get relative direction from camera
     private Vector3 RelativeDirection(Vector3 direction)
         {
-        //Vector3 xzForward = Vector3.Scale(_absoluteTransform.forward, new Vector3(1, 0, 1));
         Quaternion relativeRot = Quaternion.LookRotation(direction);
 
         return relativeRot.eulerAngles;
@@ -121,7 +150,7 @@ public class BasePlayerScript : MonoBehaviour {
         {
         if (_char.isGrounded)
             {
-            //ground velocity
+            //Gravity on ground
             Velocity -= Vector3.Project(Velocity, Physics.gravity);
             }
         }
@@ -131,7 +160,7 @@ public class BasePlayerScript : MonoBehaviour {
         {
         if (!_char.isGrounded)
             {
-            //apply gravity
+            //apply gravity when in the air
             Velocity += Physics.gravity * Time.deltaTime;
             }
         }
@@ -192,12 +221,12 @@ public class BasePlayerScript : MonoBehaviour {
                 if(hitInfo.transform.gameObject.tag == "Box")
                 {
                     Debug.Log("Entering PushBox");
-                    state = State.PushingBox;
+                    State = States.PushingBox;
                     Rigidbody currentBoxRB = hitInfo.transform.gameObject.GetComponent<Rigidbody>();
                     currentBoxRB.AddForce(this.gameObject.transform.forward * 10f, ForceMode.Acceleration);
                     //Make sure player can only move in the forward of the box | Abs will make it so the movement isn't negative 
                     //InputMovementBoxPushing = new Vector3(Mathf.Abs((Input.GetAxisRaw("Horizontal") * hitInfo.transform.forward.x)), 0, Mathf.Abs(( Input.GetAxisRaw("Vertical") * hitInfo.transform.forward.z))).normalized;
-                    state = State.Walking;
+                    State = States.Walking;
 
                 }
             }
@@ -205,31 +234,24 @@ public class BasePlayerScript : MonoBehaviour {
         }
     }
 
-    //Pick up Object - Gets called from pickup-able objects
+    //Pick up Object - Gets called from pickup-able objects - Not used atm  
     public void PickUpObject(GameObject pickup)
     {
         //Enter this script when player wants to pick up object in front of them
-
+        Debug.Log("Picking up object");
         //Play Pickup Animation
-        //_anim.SetLayerWeight(1, 1);
+        _anim.Play("PickUp", 0);
         //Save current pickup
         _currentPickup = pickup;
-
         //Allow player to start throwing pickup;
-        _pickingUp = true;
-        Animation animation;
-        animation.
-        if()
-        {
-            _anim.SetLayerWeight(1, 1);
-            _pickingUp = false;
-            _canThrow = true;
-        }
-
+        PickingUp = true;
+        State = States.PickingUp;
+        _animInfo = _anim.GetCurrentAnimatorStateInfo(0);
+        
     }
 
     
-
+    //Found On Internet - Not Mine
     //Function to clamp angles | Used to clamp rotation of camera
     public static float ClampAngle(float angle, float min, float max)
         {
