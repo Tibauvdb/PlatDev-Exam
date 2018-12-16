@@ -12,6 +12,7 @@ public class ObjectThrow : MonoBehaviour {
     private float _v0 = 10; //Start Velocity
     private float _dis; // Distance
     private float _dStep;   //Distance Current Step
+    [SerializeField]
     private float _angle = 45; //Angle at which the object will be thrown | Degrees
     private float _g; //Gravity
 
@@ -29,19 +30,20 @@ public class ObjectThrow : MonoBehaviour {
     private bool _allowCollision = true;
     private bool _colliding = false;
 
+    private Transform _parentTransform;
     //public Canvas Canvas;
+
     void Start () {
-        //Get Linerenderer on Cube (move to Player?)
         _line = this.gameObject.GetComponent<LineRenderer>();
-        _line.startWidth = 0.2f;
-        _line.endWidth = 0.2f;
+        _line.enabled = true;
+        //Get Linerenderer on Cube (move to Player?)
 
         //Set _g to downwards gravity in scene | 9.81 [m/s2]
         _g = -Physics.gravity.y;
 
         //Get the original position of the cube
         _originalPosition = this.gameObject.transform.position;
-
+        _parentTransform = this.gameObject.transform.parent.transform;
         CalculateDistance();
 
         #region Dependencies
@@ -53,15 +55,15 @@ public class ObjectThrow : MonoBehaviour {
     }
 
     void Update () {
-
+        _parentTransform = this.gameObject.transform.parent.transform;
         //As long as the object isn't colliding with anything, continue the parabole track
-        if(_colliding==false)
-        {
+        //if(_colliding==false)
+        //{
         CalculateDistance();
-        UpdatePosition();
-        AddSteps();
+        //UpdatePosition();
+        //AddSteps();
         DrawParabola();
-        }
+        //}
 	}
     private void OnCollisionEnter(Collision collision)
     {
@@ -113,11 +115,11 @@ public class ObjectThrow : MonoBehaviour {
         float dStep = step * (_dis / _maxStep);
 
         ////Update Y Position | y = x * tan(alpha) - ( g / 2*v0^2*cos^2(alpha) ) * x^2 |
-        _newY = _originalPosition.y + (dStep * Mathf.Tan(_angle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(_v0, 2)) * Mathf.Pow(Mathf.Cos(_angle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
+        _newY = _parentTransform.position.y + (dStep * Mathf.Tan(_angle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(_v0, 2)) * Mathf.Pow(Mathf.Cos(_angle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
 
-        _newX = _originalPosition.x + dStep * (Mathf.Cos(this.gameObject.transform.rotation.eulerAngles.y * (Mathf.PI / 180)));
+        _newX = _parentTransform.position.x + dStep * (Mathf.Sin(_parentTransform.localRotation.eulerAngles.y * (Mathf.PI / 180)));
 
-        _newZ = _originalPosition.z + dStep * (Mathf.Sin(this.gameObject.transform.rotation.eulerAngles.y * (Mathf.PI / 180)));
+        _newZ = _parentTransform.position.z + dStep * (Mathf.Cos(_parentTransform.localRotation.eulerAngles.y * (Mathf.PI / 180)));
 
         Vector3 newPos = new Vector3(_newX, _newY+1f, _newZ);
 

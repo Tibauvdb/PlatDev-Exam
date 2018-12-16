@@ -14,12 +14,20 @@ public class AllowPickup : MonoBehaviour {
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
-            if (Input.GetButtonDown(_input.E))
+            PlayerBehaviour.States state = other.gameObject.GetComponent<PlayerBehaviour>().State;
+            if (Input.GetButtonDown(_input.E) && other.gameObject.GetComponent<PlayerBehaviour>().State != PlayerBehaviour.States.WalkingWithPickup)
             {
-                Debug.Log("Picked Up Object");
+                //Debug.Log("Picked Up Object");
                 other.gameObject.GetComponent<PlayerBehaviour>().PickUpObject(this.gameObject);
+            }
+            //If player presses trigger and is walkingwithPickup -> activate throw script and deactivate this one
+            if(state == PlayerBehaviour.States.WalkingWithPickup)
+            {
+                this.gameObject.transform.parent = other.transform;
+                this.gameObject.GetComponent<ObjectThrow>().enabled = true;
+                this.gameObject.GetComponent<AllowPickup>().enabled = false;
             }
         }
     }

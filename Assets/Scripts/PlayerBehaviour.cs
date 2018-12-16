@@ -9,15 +9,16 @@ public class PlayerBehaviour : MonoBehaviour {
 
     //Create GetterSetter for Public Variables
     public InputManager Input { get; set; }
-
+    public IKGrabBehaviour IKGrab { get; set; }
     private PickUpStateMachine _smb;
-
+    private RotateWithMouse _cameraRotation;
     public enum States
     {
         Walking,
         Stairs,
         PushingBox,
-        PickingUp
+        PickingUp,
+        WalkingWithPickup
     }
 
     //Create state
@@ -47,11 +48,8 @@ public class PlayerBehaviour : MonoBehaviour {
     public bool PickingUp { get; set; }
     private bool _canThrow;
 
-    #region IKproperties
-    private Transform _rightHand;
-    private float _rightHandWeight;
-    private Vector3 _rightHandPos;
-    #endregion
+ 
+
     void Start ()
         {
         //Set Components;
@@ -59,16 +57,16 @@ public class PlayerBehaviour : MonoBehaviour {
         _absoluteTransform = Camera.main.transform;
         _anim = transform.GetChild(0).GetComponent<Animator>();
         Input = GameObject.Find("GameManager").GetComponent<InputManager>();
+        IKGrab = this.gameObject.transform.GetChild(0).GetComponent<IKGrabBehaviour>();
+        _cameraRotation = this.gameObject.GetComponent<RotateWithMouse>();
         //Set stateMachineBehaviour
-
         _smb = _anim.GetBehaviour<PickUpStateMachine>();
         _smb._bps = this;
 
+        //Set Base State
         State = States.Walking;
 
-        #region setIK
-        _rightHand = _anim.GetBoneTransform(HumanBodyBones.RightHand);
-        #endregion
+       
 
 
         #region Dependencies
@@ -86,19 +84,26 @@ public class PlayerBehaviour : MonoBehaviour {
         //Normalize
         InputMovementBase = new Vector3(UnityEngine.Input.GetAxis(Input.HorizontalAxis), 0, UnityEngine.Input.GetAxis(Input.VerticalAxis)).normalized;  //Used for base movement
 
-           /* if (Input.GetButtonDown(_input.A))
+        if(State == States.PickingUp)
+        {
+            _cameraRotation.enabled = false;
+            if (_currentPickup != null && PickingUp == true)
             {
-               // _pushBox = true;
-            }*/
-
-            if (UnityEngine.Input.GetAxis(Input.Triggers) > 0)
-            {
-                
+                IKGrab.PickUp = _currentPickup.transform;
+                IKGrab.LookAtObj = _currentPickup.transform;
             }
-            
-
+            else if (_currentPickup != null && PickingUp == false)
+            {
+                IKGrab.PickUp = null;
+            }
+        }
+        if(State == States.WalkingWithPickup)
+        {
+            if (_cameraRotation.enabled == false)
+                _cameraRotation.enabled = true;
 
         }
+    }
 
     void FixedUpdate ()
         {
@@ -106,7 +111,7 @@ public class PlayerBehaviour : MonoBehaviour {
             ApplyGround();
             ApplyGravity();
 
-            if(State == States.Walking)
+            if(State == States.Walking || State == States.WalkingWithPickup)
             {
                 ApplyMovementBase();
             }
@@ -236,7 +241,7 @@ public class PlayerBehaviour : MonoBehaviour {
     public void PickUpObject(GameObject pickup)
     {
         //Enter this script when player wants to pick up object in front of them
-        Debug.Log("Picking up object");
+        //Debug.Log("Picking up object");
         //Play Pickup Animation
         _anim.Play("PickUp", 0);
         //Save current pickup
@@ -249,14 +254,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private void OnAnimatorIK(int layerIndex)
     {
-        Debug.Log("Entering OnAnimatorIK");
 
-        float distanceToObject = Vector3.Distance(_anim.GetBoneTransform(HumanBodyBones.RightHand).position, _currentPickup.transform.position);
-        _rightHandWeight = Mathf.Clamp01(1 - distanceToObject);
-
-        _anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-
-        _anim.SetIKPosition(AvatarIKGoal.RightHand, _rightHand.position);
 
 
        

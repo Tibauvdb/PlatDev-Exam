@@ -24,12 +24,12 @@ public class PickUpStateMachine : StateMachineBehaviour {
 
         _bps.PickingUp = false;
         animator.SetBool("PickUpObject", _bps.PickingUp);
-
+        _bps.IKGrab.Reset();
         //Mask Layer so upper body is still holding object
         animator.SetLayerWeight(1, 1);
 
         //Allow Player to walk again
-        _bps.State = PlayerBehaviour.States.Walking;
+        _bps.State = PlayerBehaviour.States.WalkingWithPickup;
     }
 
 	// OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
@@ -38,7 +38,7 @@ public class PickUpStateMachine : StateMachineBehaviour {
 	//}
 
 	// OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
-	override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        Debug.Log("Entering OnStateIK");
-	}
+	//override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+    //    Debug.Log("Entering OnStateIK");
+	//}
 }
