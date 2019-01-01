@@ -32,18 +32,22 @@ public class AllowPickup : MonoBehaviour {
             {
                 //Start Throwing, as soon as trigger gets released, object will be thrown
 
-                this.gameObject.transform.parent = other.transform; //Set parent to Player so lineRenderer will preview correctly
                 _objectThrowScript.enabled = true;
                 this.gameObject.GetComponent<AllowPickup>().enabled = false;
                 _isThrowing = true;
 
                 _anim.SetTrigger("PreparingThrow");
+
+                _objectThrowScript.V0 += 0.05f;
+                _objectThrowScript.V0 =  Mathf.Clamp(_objectThrowScript.V0, 0, 12);
             }
 
             //If Player Releases trigger, throw the object
             if(_isThrowing==true && Input.GetAxis(_input.Triggers) == 0)
             {
+                _anim.ResetTrigger("PreparingThrow");
                 _anim.SetTrigger("IsThrowing");
+
                 //Throw Object
                 this.gameObject.GetComponent<ObjectThrow>().Throwing = true;
                 this.gameObject.transform.parent = null;
@@ -51,7 +55,6 @@ public class AllowPickup : MonoBehaviour {
 
                 //Reset
                 _isThrowing = false;
-                
             }
         }
     }

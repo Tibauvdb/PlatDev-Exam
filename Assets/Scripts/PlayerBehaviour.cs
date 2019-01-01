@@ -12,7 +12,7 @@ public class PlayerBehaviour : MonoBehaviour {
     public IKGrabBehaviour IKGrab { get; set; }
 
     private PickUpStateMachine _pickupStateMachine;
-    private ThrowingStateMachine _throwingStateMachine;
+    private ThrowingEndStateMachine _throwingStateMachine;
     private RotateWithMouse _cameraRotation;
     public enum States
     {
@@ -64,6 +64,8 @@ public class PlayerBehaviour : MonoBehaviour {
         //Set stateMachineBehaviour
         _pickupStateMachine = _anim.GetBehaviour<PickUpStateMachine>();
         _pickupStateMachine._bps = this;
+        _throwingStateMachine = _anim.GetBehaviour<ThrowingEndStateMachine>();
+        _throwingStateMachine._bps = this;
 
         //Set Base State
         State = States.Walking;

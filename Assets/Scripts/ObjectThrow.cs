@@ -11,7 +11,7 @@ public class ObjectThrow : MonoBehaviour {
     private LineRenderer _line;
 
     [SerializeField]
-    private float _v0 = 10; //Start Velocity
+    public float V0 = 10; //Start Velocity
     private float _dis; // Distance
     private float _dStep;   //Distance Current Step
     [SerializeField]
@@ -47,8 +47,9 @@ public class ObjectThrow : MonoBehaviour {
         //Set _g to downwards gravity in scene | 9.81 [m/s2]
         _g = -Physics.gravity.y;
 
-        _parentPos = this.gameObject.transform.parent.transform.position;
-        _parentRot = this.gameObject.transform.parent.transform.localRotation;
+        _parentPos = GameObject.Find("CamPivot").transform.position;
+        _parentRot = GameObject.Find("CamPivot").transform.localRotation;
+
         CalculateDistance();
 
         #region Dependencies
@@ -66,8 +67,8 @@ public class ObjectThrow : MonoBehaviour {
         }
         if(this.gameObject.transform.parent != null)
         {
-            _parentPos = this.gameObject.transform.parent.transform.position; //Player Position
-            _parentRot = this.gameObject.transform.parent.transform.localRotation; //Player Rotation
+            _parentPos = GameObject.Find("Player").transform.position;
+            _parentRot = GameObject.Find("Player").transform.localRotation;
 
         }
 
@@ -97,7 +98,7 @@ public class ObjectThrow : MonoBehaviour {
     //Calculate distance | this will change when _v0 (Throwing power) get increased
     private void CalculateDistance()
     {
-        _dis = (Mathf.Pow(_v0, 2) * Mathf.Sin(2 * (_angle * Mathf.PI / 180))) / _g; //x = (v0^2 * sin(2*alpha)) / g
+        _dis = (Mathf.Pow(V0, 2) * Mathf.Sin(2 * (_angle * Mathf.PI / 180))) / _g; //x = (v0^2 * sin(2*alpha)) / g
     }
 
     //Update the position of the cube according to the parabola
@@ -129,7 +130,7 @@ public class ObjectThrow : MonoBehaviour {
         float dStep = step * (_dis / _maxStep);
 
         ////Update Y Position | y = x * tan(alpha) - ( g / 2*v0^2*cos^2(alpha) ) * x^2 |
-        _newY = _parentPos.y + (dStep * Mathf.Tan(_angle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(_v0, 2)) * Mathf.Pow(Mathf.Cos(_angle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
+        _newY = _parentPos.y + (dStep * Mathf.Tan(_angle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(V0, 2)) * Mathf.Pow(Mathf.Cos(_angle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
 
         _newX = _parentPos.x + dStep * (Mathf.Sin(_parentRot.eulerAngles.y * (Mathf.PI / 180)));
 
@@ -211,7 +212,7 @@ public class ObjectThrow : MonoBehaviour {
 
     private void ResetThrow()
     {
-        _currentStep = 0;
+        _currentStep = 5;
         _line.positionCount = 0;
         _line.enabled = true;
         Throwing = false;
