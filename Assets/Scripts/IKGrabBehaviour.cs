@@ -25,7 +25,7 @@ public class IKGrabBehaviour : MonoBehaviour {
 
     public void OnAnimatorIK(int layerIndex)
     {
-        Debug.Log("Entering OnAnimatorIK");
+        //Debug.Log("Entering OnAnimatorIK");
 
         //If there is an object to look at, set the lookAt Position and weight
         if (LookAtObj != null)
@@ -52,12 +52,13 @@ public class IKGrabBehaviour : MonoBehaviour {
                 {
                     _lerpCount += 0.005f;
                 }
-            Debug.Log("Term 1 Weight: "+ Anim.GetIKPositionWeight(AvatarIKGoal.RightHand));
-            Debug.Log("Term 1 Pos: " + Anim.GetIKPosition(AvatarIKGoal.RightHand));
+            //Debug.Log("Term 1 Weight: "+ Anim.GetIKPositionWeight(AvatarIKGoal.RightHand));
+            //Debug.Log("Term 1 Pos: " + Anim.GetIKPosition(AvatarIKGoal.RightHand));
             }
 
             if(Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.34f)
             {
+                Debug.Log("setting Right Parent");
                 PickUp.parent = RightHand.transform;
                 PickUp.position = RightHand.transform.position;
             }

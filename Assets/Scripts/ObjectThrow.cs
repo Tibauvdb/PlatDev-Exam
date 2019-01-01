@@ -6,6 +6,8 @@ using UnityEngine.Assertions;
 
 public class ObjectThrow : MonoBehaviour {
 
+
+
     private LineRenderer _line;
 
     [SerializeField]
@@ -21,7 +23,7 @@ public class ObjectThrow : MonoBehaviour {
     [SerializeField]
     private int _currentStep = 1;
 
-    private Vector3 _originalPosition;
+    //private Vector3 _originalPosition;
 
     private float _newX;
     private float _newY;
@@ -30,20 +32,23 @@ public class ObjectThrow : MonoBehaviour {
     private bool _allowCollision = true;
     private bool _colliding = false;
 
-    private Transform _parentTransform;
-    //public Canvas Canvas;
+    //private Transform _parentTransform;
+    private Vector3 _parentPos;
+    private Quaternion _parentRot;
+    public bool Throwing = false;
+
 
     void Start () {
+
+
         _line = this.gameObject.GetComponent<LineRenderer>();
         _line.enabled = true;
-        //Get Linerenderer on Cube (move to Player?)
 
         //Set _g to downwards gravity in scene | 9.81 [m/s2]
         _g = -Physics.gravity.y;
 
-        //Get the original position of the cube
-        _originalPosition = this.gameObject.transform.position;
-        _parentTransform = this.gameObject.transform.parent.transform;
+        _parentPos = this.gameObject.transform.parent.transform.position;
+        _parentRot = this.gameObject.transform.parent.transform.localRotation;
         CalculateDistance();
 
         #region Dependencies
@@ -55,30 +60,39 @@ public class ObjectThrow : MonoBehaviour {
     }
 
     void Update () {
-        _parentTransform = this.gameObject.transform.parent.transform;
-        //As long as the object isn't colliding with anything, continue the parabole track
-        //if(_colliding==false)
-        //{
+        if (Throwing == false)
+        {
+            DrawParabola();
+        }
+        if(this.gameObject.transform.parent != null)
+        {
+            _parentPos = this.gameObject.transform.parent.transform.position; //Player Position
+            _parentRot = this.gameObject.transform.parent.transform.localRotation; //Player Rotation
+
+        }
+
         CalculateDistance();
-        //UpdatePosition();
-        //AddSteps();
-        DrawParabola();
-        //}
+
+        if(Throwing == true && _colliding==false)
+        {
+            Throw();
+            AddSteps();
+            _allowCollision = true;
+            _line.enabled = false;
+        }
 	}
     private void OnCollisionEnter(Collision collision)
     {
-        if(_allowCollision == true && _currentStep >1)
+        if(_allowCollision == true && _currentStep >10)
         {
-        //if Object collides with something - Stop movement
-        _colliding = true;
+            //if Object collides with something - Stop movement
+            _colliding = true;
+            ResetThrow();
+            this.gameObject.GetComponent<AllowPickup>().enabled = true;
+            this.gameObject.GetComponent<ObjectThrow>().enabled = false;
         }
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        //Allow object to stop after exiting it's first collision (usually player or floor it starts the parabole from)
-        _allowCollision = true;
-    }
 
     //Calculate distance | this will change when _v0 (Throwing power) get increased
     private void CalculateDistance()
@@ -87,7 +101,7 @@ public class ObjectThrow : MonoBehaviour {
     }
 
     //Update the position of the cube according to the parabola
-    private void UpdatePosition()
+    public void Throw()
     {
         ////Set new position
         this.gameObject.transform.position = StepPosCalculation(_currentStep);
@@ -115,11 +129,11 @@ public class ObjectThrow : MonoBehaviour {
         float dStep = step * (_dis / _maxStep);
 
         ////Update Y Position | y = x * tan(alpha) - ( g / 2*v0^2*cos^2(alpha) ) * x^2 |
-        _newY = _parentTransform.position.y + (dStep * Mathf.Tan(_angle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(_v0, 2)) * Mathf.Pow(Mathf.Cos(_angle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
+        _newY = _parentPos.y + (dStep * Mathf.Tan(_angle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(_v0, 2)) * Mathf.Pow(Mathf.Cos(_angle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
 
-        _newX = _parentTransform.position.x + dStep * (Mathf.Sin(_parentTransform.localRotation.eulerAngles.y * (Mathf.PI / 180)));
+        _newX = _parentPos.x + dStep * (Mathf.Sin(_parentRot.eulerAngles.y * (Mathf.PI / 180)));
 
-        _newZ = _parentTransform.position.z + dStep * (Mathf.Cos(_parentTransform.localRotation.eulerAngles.y * (Mathf.PI / 180)));
+        _newZ = _parentPos.z + dStep * (Mathf.Cos(_parentRot.eulerAngles.y * (Mathf.PI / 180)));
 
         Vector3 newPos = new Vector3(_newX, _newY+1f, _newZ);
 
@@ -193,4 +207,15 @@ public class ObjectThrow : MonoBehaviour {
          
         }
     }*/
+
+
+    private void ResetThrow()
+    {
+        _currentStep = 0;
+        _line.positionCount = 0;
+        _line.enabled = true;
+        Throwing = false;
+        _allowCollision = false;
+        _colliding = false;
+    }
 }

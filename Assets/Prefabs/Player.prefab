@@ -791,7 +791,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4448243294648512}
   - component: {fileID: 95355720418986458}
-  - component: {fileID: 114765644821344402}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -2332,15 +2331,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0461fd9e9edb7454082d662af4b76d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
   _acceleration: 30
   _drag: 8
   _maximumXZVelocity: 40
   _jumpHeight: 2
   _rayCastTransform: {fileID: 4168618092372678}
   Velocity: {x: 0, y: 0, z: 0}
-  InputMovementBase: {x: 0, y: 0, z: 0}
-  InputMovementBoxPushing: {x: 0, y: 0, z: 0}
 --- !u!114 &114648050374204360
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2353,19 +2349,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camPivot: {fileID: 4398270771923540}
---- !u!114 &114765644821344402
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1724827702304556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5cdf2acb307dcc40b6d954c7339ade2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _leftHand: {fileID: 4437424423551542}
-  _rightHand: {fileID: 4817027793688204}
 --- !u!137 &137494507562390912
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

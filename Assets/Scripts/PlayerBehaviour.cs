@@ -5,12 +5,14 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 //[RequireComponent(typeof(CharacterController))]
-public class PlayerBehaviour : MonoBehaviour { 
+public class PlayerBehaviour : MonoBehaviour {
 
     //Create GetterSetter for Public Variables
-    public InputManager Input { get; set; }
+    private InputManager _input;
     public IKGrabBehaviour IKGrab { get; set; }
-    private PickUpStateMachine _smb;
+
+    private PickUpStateMachine _pickupStateMachine;
+    private ThrowingStateMachine _throwingStateMachine;
     private RotateWithMouse _cameraRotation;
     public enum States
     {
@@ -22,7 +24,7 @@ public class PlayerBehaviour : MonoBehaviour {
     }
 
     //Create state
-    public States State { get; set; }
+    [SerializeField] public States State { get; set; }
     
 
     [SerializeField] private float _acceleration; //[m/s2]
@@ -46,7 +48,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private GameObject _currentPickup;
     public bool PickingUp { get; set; }
-    private bool _canThrow;
+    //private bool _canThrow;
 
  
 
@@ -56,12 +58,12 @@ public class PlayerBehaviour : MonoBehaviour {
         _char = this.gameObject.GetComponent<CharacterController>();
         _absoluteTransform = Camera.main.transform;
         _anim = transform.GetChild(0).GetComponent<Animator>();
-        Input = GameObject.Find("GameManager").GetComponent<InputManager>();
+        _input = GameObject.Find("GameManager").GetComponent<InputManager>();
         IKGrab = this.gameObject.transform.GetChild(0).GetComponent<IKGrabBehaviour>();
         _cameraRotation = this.gameObject.GetComponent<RotateWithMouse>();
         //Set stateMachineBehaviour
-        _smb = _anim.GetBehaviour<PickUpStateMachine>();
-        _smb._bps = this;
+        _pickupStateMachine = _anim.GetBehaviour<PickUpStateMachine>();
+        _pickupStateMachine._bps = this;
 
         //Set Base State
         State = States.Walking;
@@ -82,25 +84,41 @@ public class PlayerBehaviour : MonoBehaviour {
         {
         //Get input from Any Horizontal or Vertical Axis
         //Normalize
-        InputMovementBase = new Vector3(UnityEngine.Input.GetAxis(Input.HorizontalAxis), 0, UnityEngine.Input.GetAxis(Input.VerticalAxis)).normalized;  //Used for base movement
+        InputMovementBase = new Vector3(Input.GetAxis(_input.HorizontalAxis), 0,Input.GetAxis(_input.VerticalAxis)).normalized;  //Used for base movement
+        switch (State){
+            case States.Walking:
+                if (_anim.GetLayerWeight(1) == 1)
+                {
+                    _anim.SetLayerWeight(1, 0);
+                    _currentPickup = null;
+                }
+                break;
 
-        if(State == States.PickingUp)
-        {
-            _cameraRotation.enabled = false;
-            if (_currentPickup != null && PickingUp == true)
-            {
-                IKGrab.PickUp = _currentPickup.transform;
-                IKGrab.LookAtObj = _currentPickup.transform;
-            }
-            else if (_currentPickup != null && PickingUp == false)
-            {
-                IKGrab.PickUp = null;
-            }
-        }
-        if(State == States.WalkingWithPickup)
-        {
-            if (_cameraRotation.enabled == false)
-                _cameraRotation.enabled = true;
+            case States.PickingUp:
+
+                _cameraRotation.enabled = false;
+
+                if (_currentPickup != null && PickingUp == true)
+                {
+                    IKGrab.PickUp = _currentPickup.transform;
+                    IKGrab.LookAtObj = _currentPickup.transform;
+                }
+                else if (_currentPickup != null && PickingUp == false)
+                {
+                    IKGrab.PickUp = null;
+                }
+
+                break;
+
+            case States.PushingBox:
+                break;
+            case States.WalkingWithPickup:
+                if (_cameraRotation.enabled == false)
+                    _cameraRotation.enabled = true;
+                break;
+            case States.Stairs:
+                break;
+
 
         }
     }
@@ -250,15 +268,6 @@ public class PlayerBehaviour : MonoBehaviour {
         PickingUp = true;
         State = States.PickingUp;
         
-    }
-
-    private void OnAnimatorIK(int layerIndex)
-    {
-
-
-
-       
-
     }
 
     //Found On Internet - Not Mine
