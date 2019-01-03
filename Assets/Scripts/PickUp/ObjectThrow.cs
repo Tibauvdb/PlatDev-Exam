@@ -7,15 +7,15 @@ using UnityEngine.Assertions;
 public class ObjectThrow : MonoBehaviour {
 
 
-
+    private AllowPickup _allowPickup;
     private LineRenderer _line;
 
-    [SerializeField]
-    public float V0 = 10; //Start Velocity
+    private float _v0 = 10; //Start Velocity
     private float _dis; // Distance
     private float _dStep;   //Distance Current Step
     [SerializeField]
-    private float _angle = 45; //Angle at which the object will be thrown | Degrees
+    public float ThrowAngle = 25; //Angle at which the object will be thrown | Degrees
+    private float _startAngle = 25;
     private float _g; //Gravity
 
     [SerializeField]
@@ -40,7 +40,7 @@ public class ObjectThrow : MonoBehaviour {
 
     void Start () {
 
-
+        _allowPickup = this.gameObject.GetComponent<AllowPickup>();
         _line = this.gameObject.GetComponent<LineRenderer>();
         _line.enabled = true;
 
@@ -89,7 +89,8 @@ public class ObjectThrow : MonoBehaviour {
             //if Object collides with something - Stop movement
             _colliding = true;
             ResetThrow();
-            this.gameObject.GetComponent<AllowPickup>().enabled = true;
+            _allowPickup.Thrown = false;
+            _allowPickup.enabled = true;
             this.gameObject.GetComponent<ObjectThrow>().enabled = false;
         }
     }
@@ -98,7 +99,7 @@ public class ObjectThrow : MonoBehaviour {
     //Calculate distance | this will change when _v0 (Throwing power) get increased
     private void CalculateDistance()
     {
-        _dis = (Mathf.Pow(V0, 2) * Mathf.Sin(2 * (_angle * Mathf.PI / 180))) / _g; //x = (v0^2 * sin(2*alpha)) / g
+        _dis = (Mathf.Pow(_v0, 2) * Mathf.Sin(2 * (ThrowAngle * Mathf.PI / 180))) / _g; //x = (v0^2 * sin(2*alpha)) / g
     }
 
     //Update the position of the cube according to the parabola
@@ -130,7 +131,7 @@ public class ObjectThrow : MonoBehaviour {
         float dStep = step * (_dis / _maxStep);
 
         ////Update Y Position | y = x * tan(alpha) - ( g / 2*v0^2*cos^2(alpha) ) * x^2 |
-        _newY = _parentPos.y + (dStep * Mathf.Tan(_angle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(V0, 2)) * Mathf.Pow(Mathf.Cos(_angle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
+        _newY = _parentPos.y + (dStep * Mathf.Tan(ThrowAngle * (Mathf.PI / 180))) - (_g / (2 * (Mathf.Pow(_v0, 2)) * Mathf.Pow(Mathf.Cos(ThrowAngle * (Mathf.PI / 180)), 2))) * (Mathf.Pow(dStep, 2));
 
         _newX = _parentPos.x + dStep * (Mathf.Sin(_parentRot.eulerAngles.y * (Mathf.PI / 180)));
 
@@ -141,74 +142,6 @@ public class ObjectThrow : MonoBehaviour {
         return newPos;
     }
   
-    /* private void CheckFinalPosition(RaycastHit hitinfo)
-    {
-        for (int steps = _maxStep; steps < _maxStep * 2; steps++)
-        {
-            //Debug.Log(hitinfo.point.y);
-            if (hitinfo.point.y >= StepPosCalculation(steps).y)
-            {
-                //This is the step+1 where the box will hit the ground
-                //Set canvas element position to this position
-                Canvas.transform.position = StepPosCalculation(steps-1);
-                return;
-            }
-        }
-    }*/
-   
-    /*private void CheckObjectCollision()
-    {
-        //Check if the object is colliding with the ground at _MaxSteps
-        RaycastHit hitinfo;
-
-        //Get position at the last step 
-        #region WrittenOutLastStepPos
-
-        #endregion
-
-        Vector3 lastStepPos = StepPosCalculation(_maxStep);
-
-        //If this raycast does not return true, the object will land on the ground
-        if (Physics.Raycast(lastStepPos,Vector3.down,out hitinfo)){
-            //Check if there is a floor below (also trigger when inside object)
-            if (lastStepPos.y >= hitinfo.point.y)
-            {          
-                CheckFinalPosition(hitinfo);
-                
-                #region FirstIdea
-                    /* 
-                     //Option 2 - The cube will need to fall further
-                     //Y position is known - calculate X/Z Position
-                     float yEnd = hitinfo.point.y - lastStepPos.y;
-                     float tanAlpha = (Mathf.Tan(_angle * (Mathf.PI / 180)));
-                     float xTop = Mathf.Sqrt(Mathf.Pow(tanAlpha, 2) - (4 * yEnd) * (_g / (Mathf.Pow(_v0, 2) * Mathf.Pow(Mathf.Cos(_angle), 2))));
-                     float xBot = 2 * (_g / (Mathf.Pow(_v0, 2) * Mathf.Pow(Mathf.Cos(_angle), 2)));
-
-                     float x1 = ((tanAlpha + xTop) / xBot);
-                     float x2 = ((tanAlpha - xTop) / xBot);
-                     Debug.Log(_dis +"x1 = " + x1);
-                     Debug.Log(_dis + "x2 = " + x2);
-                     if (x1 >= 0)
-                     {
-                         //x1 is right x
-                         float uiX = x1 * (Mathf.Cos(this.gameObject.transform.rotation.eulerAngles.y * (Mathf.PI / 180)));
-                         float uiZ = x1 * (Mathf.Sin(this.gameObject.transform.rotation.eulerAngles.y * (Mathf.PI / 180)));
-                         Canvas.transform.position =  new Vector3(uiX,hitinfo.transform.position.y+0.5f,uiZ);
-                     }
-                     else
-                     {
-                         //x2 is right x
-                         float uiX = _originalPosition.x + x2 * (Mathf.Cos(this.gameObject.transform.rotation.eulerAngles.y * (Mathf.PI / 180)));
-                         float uiZ = _originalPosition.z + x2 * (Mathf.Sin(this.gameObject.transform.rotation.eulerAngles.y * (Mathf.PI / 180)));
-                         Canvas.transform.position = new Vector3(uiX, hitinfo.point.y + 0.5f, uiZ);
-                     }
-
-                    #endregion
-            }
-         
-        }
-    }*/
-
 
     private void ResetThrow()
     {
@@ -218,5 +151,6 @@ public class ObjectThrow : MonoBehaviour {
         Throwing = false;
         _allowCollision = false;
         _colliding = false;
+        ThrowAngle = _startAngle;
     }
 }

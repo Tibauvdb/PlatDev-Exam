@@ -12,9 +12,12 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     private NavMeshAgent _agent;
     private float _maxRoamDistance = 10f; //10m
+
+    private Animator _anim;
 	// Use this for initialization
 	void Start () {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
+        _anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
 
 
         _rootNode =
@@ -30,8 +33,13 @@ public class BaseAIBehaviour : MonoBehaviour {
 
         StartCoroutine(RunTree());
 	}
-	
-	// Update is called once per frame
+
+    private void Update()
+    {
+        _anim.SetFloat("HorizontalVelocity", -_agent.velocity.z * this.gameObject.transform.forward.z);
+        _anim.SetFloat("VerticalVelocity", _agent.velocity.x * this.gameObject.transform.forward.x);
+    }
+    // Update is called once per frame
     IEnumerator RunTree()
     {
         while (Application.isPlaying)
@@ -48,11 +56,13 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     IEnumerator<NodeResult> KnockedOut()
     {
+        //Stop AI from following path
         _agent.isStopped = true;
         _agent.ResetPath();
         Debug.Log("KnockedOut | Playing Animation");
         //Play KnockedOut Animation
-
+        _anim.ResetTrigger("IsRespawned");
+        _anim.SetTrigger("IsKnockedOut");
         yield return NodeResult.Succes;
     }
 
@@ -67,6 +77,9 @@ public class BaseAIBehaviour : MonoBehaviour {
             IsAIKnockedOut = false;
             _knockedOutTimer = 10; //Reset Timer
 
+            //Reset Animation
+            _anim.ResetTrigger("IsKnockedOut");
+            _anim.SetTrigger("IsRespawned");
             yield return NodeResult.Failure;
         }
         Debug.Log("Returning Running");
@@ -88,21 +101,25 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     IEnumerator<NodeResult> Roaming()
     {
-        float newDestination = Random.Range(0, 100);
-        //Debug.Log("Roaming" + newDestination);
-
-        if (newDestination >= 99)
+        if(_agent.remainingDistance <= _agent.stoppingDistance)
         {
-        //Go To random Spot on NavMesh
-        Vector3 dir = Random.insideUnitSphere * _maxRoamDistance;
-        NavMeshHit hit;
-        NavMesh.SamplePosition(dir, out hit, Random.Range(0f, _maxRoamDistance), 1);
 
-        Vector3 destination = hit.position;
+            float newDestination = Random.Range(0, 100);
+            //Debug.Log("Roaming" + newDestination);
 
-        _agent.SetDestination(destination);
+            if (newDestination >= 99)
+            {
+                //Go To random Spot on NavMesh
+                Vector3 dir = Random.insideUnitSphere * _maxRoamDistance;
+                NavMeshHit hit;
+                NavMesh.SamplePosition(dir, out hit, Random.Range(0f, _maxRoamDistance), 1);
+
+                Vector3 destination = hit.position;
+
+                _agent.SetDestination(destination);
+            }
+
         }
-
         
         yield return NodeResult.Succes;
     }

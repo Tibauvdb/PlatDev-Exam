@@ -8,7 +8,7 @@ public class AllowPickup : MonoBehaviour {
     private Animator _anim;
     private InputManager _input;
     private bool _isThrowing = false;
-    private bool _thrown = false;
+    public bool Thrown = false;
 
     private ObjectThrow _objectThrowScript;
     private void Start()
@@ -27,7 +27,7 @@ public class AllowPickup : MonoBehaviour {
             {
                 other.gameObject.GetComponent<PlayerBehaviour>().PickUpObject(this.gameObject);
                 this.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-                _thrown = false;
+                Thrown = false;
             }
             //If player presses trigger and is walkingwithPickup -> activate throw script and deactivate this one
             if(state == PlayerBehaviour.States.WalkingWithPickup && Input.GetAxis(_input.Triggers)!=0)
@@ -40,8 +40,8 @@ public class AllowPickup : MonoBehaviour {
 
                 _anim.SetTrigger("PreparingThrow");
 
-                _objectThrowScript.V0 += 0.05f;
-                _objectThrowScript.V0 =  Mathf.Clamp(_objectThrowScript.V0, 0, 12);
+                _objectThrowScript.ThrowAngle += 0.05f;
+                _objectThrowScript.ThrowAngle =  Mathf.Clamp(_objectThrowScript.ThrowAngle, 0, 45); //0,12
             }
 
             //If Player Releases trigger, throw the object
@@ -57,13 +57,14 @@ public class AllowPickup : MonoBehaviour {
 
                 //Reset
                 _isThrowing = false;
-                _thrown = true;
+                Thrown = true;
             }
         }
 
-        else if(other.gameObject.tag == "AI" && _thrown == true)
+        else if(other.gameObject.tag == "AI" && Thrown == true)
         {
             other.GetComponent<BaseAIBehaviour>().IsAIKnockedOut = true;
+            Thrown = false;
         }
     }
 }

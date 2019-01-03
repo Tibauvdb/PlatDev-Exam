@@ -24058,7 +24058,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh4780
+  m_Name: pb_Mesh4836
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -31850,8 +31850,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 2
+  m_Acceleration: 1.25
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -42917,6 +42917,11 @@ Prefab:
       propertyPath: _anim
       value: 
       objectReference: {fileID: 272389446}
+    - target: {fileID: 114755018485085552, guid: 4a2f5435776aa084692d7df9e797d52c,
+        type: 2}
+      propertyPath: V0
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a2f5435776aa084692d7df9e797d52c, type: 2}
   m_IsPrefabAsset: 0
@@ -70678,8 +70683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c9732293929d1b4691c0b64b6a1dd7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  V0: 10
-  _angle: 45
+  ThrowAngle: 45
   _maxStep: 100
   _currentStep: 1
   Throwing: 0
