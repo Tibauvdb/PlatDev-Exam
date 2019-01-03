@@ -8,17 +8,20 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     public bool IsAIKnockedOut;
     public bool IsAIFollowing;
+    public Vector3 PlayerPosition;
     private float _knockedOutTimer = 10;
 
     private NavMeshAgent _agent;
     private float _maxRoamDistance = 10f; //10m
 
     private Animator _anim;
+    private AIStateMachine _aiStateMachine;
 	// Use this for initialization
 	void Start () {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         _anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
-
+        _aiStateMachine = _anim.GetBehaviour<AIStateMachine>();
+        _aiStateMachine.AIBehaviour = this;
 
         _rootNode =
             new SelectorNode(
@@ -56,9 +59,9 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     IEnumerator<NodeResult> KnockedOut()
     {
+        IsAIFollowing = false;
         //Stop AI from following path
-        _agent.isStopped = true;
-        _agent.ResetPath();
+        ResetAgent();
         Debug.Log("KnockedOut | Playing Animation");
         //Play KnockedOut Animation
         _anim.ResetTrigger("IsRespawned");
@@ -96,6 +99,7 @@ public class BaseAIBehaviour : MonoBehaviour {
     {
         //Start Following The Player
         Debug.Log("Following Player");
+        _agent.SetDestination(PlayerPosition);
         yield return NodeResult.Running;
     }
 
@@ -124,5 +128,9 @@ public class BaseAIBehaviour : MonoBehaviour {
         yield return NodeResult.Succes;
     }
 
-
+    public void ResetAgent()
+    {
+        _agent.isStopped = true;
+        _agent.ResetPath();
+    }
 }

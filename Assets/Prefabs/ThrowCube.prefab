@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 114755018485085552}
   - component: {fileID: 120517667247609808}
   - component: {fileID: 114432678364838388}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ThrowCube
   m_TagString: PickUp
   m_Icon: {fileID: 0}
