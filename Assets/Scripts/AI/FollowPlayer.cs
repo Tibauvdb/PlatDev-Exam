@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class FollowPlayer : MonoBehaviour {
+
     private Transform _player;
     private BaseAIBehaviour _aiBehaviour;
     private int _visionDistance = 5; //5m
 
+    //Make sure Linecast ignores the "Pickups" Layer
     private int _layerMask = 1 << 11;
+
 	void Start () {
         //Get player from scene
         _player = GameObject.Find("Player").transform;
@@ -30,7 +33,6 @@ public class FollowPlayer : MonoBehaviour {
                 //If the lineCast returns true, something is in between the player & AI
                 if (_aiBehaviour.IsAIFollowing)
                 {
-                    Debug.Log("LineCast Succes | Resetting IsAiFollowing");
                 _aiBehaviour.IsAIFollowing = false;
                 //Reset Agent
                 _aiBehaviour.ResetAgent();
@@ -40,8 +42,7 @@ public class FollowPlayer : MonoBehaviour {
             {
                 _aiBehaviour.IsAIFollowing = true;
                 _aiBehaviour.PlayerPosition = _player.position;
-            }            
-            
+            }              
         }
         else if(_aiBehaviour.IsAIFollowing)
         {

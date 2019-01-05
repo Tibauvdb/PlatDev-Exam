@@ -16,12 +16,15 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     private Animator _anim;
     private AIStateMachine _aiStateMachine;
-	// Use this for initialization
+
 	void Start () {
+
+        #region Start
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         _anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
         _aiStateMachine = _anim.GetBehaviour<AIStateMachine>();
         _aiStateMachine.AIBehaviour = this;
+        #endregion
 
         _rootNode =
             new SelectorNode(
@@ -42,7 +45,7 @@ public class BaseAIBehaviour : MonoBehaviour {
         _anim.SetFloat("HorizontalVelocity", -_agent.velocity.z * this.gameObject.transform.forward.z);
         _anim.SetFloat("VerticalVelocity", _agent.velocity.x * this.gameObject.transform.forward.x);
     }
-    // Update is called once per frame
+
     IEnumerator RunTree()
     {
         while (Application.isPlaying)
@@ -53,7 +56,7 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     bool IsKnockedOut()
     {
-        Debug.Log("IsKnockedOut" + IsAIKnockedOut);
+        //Debug.Log("IsKnockedOut" + IsAIKnockedOut);
         return IsAIKnockedOut;
     }
 
@@ -91,14 +94,14 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     bool IsFollowing()
     {
-        Debug.Log("IsFollowing" + IsAIFollowing);
+        //Debug.Log("IsFollowing " + IsAIFollowing);
         return IsAIFollowing; 
     }
 
     IEnumerator<NodeResult> FollowPlayer()
     {
         //Start Following The Player
-        Debug.Log("Following Player");
+        //Debug.Log("Following Player");
         _agent.SetDestination(PlayerPosition);
         yield return NodeResult.Running;
     }

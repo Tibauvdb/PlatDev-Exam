@@ -13,6 +13,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private PickUpStateMachine _pickupStateMachine;
     private ThrowingEndStateMachine _throwingStateMachine;
+    private PushingStateMachine _pushingStateMachine;
     private RotateWithMouse _cameraRotation;
     public enum States
     {
@@ -66,7 +67,8 @@ public class PlayerBehaviour : MonoBehaviour {
         _pickupStateMachine._bps = this;
         _throwingStateMachine = _anim.GetBehaviour<ThrowingEndStateMachine>();
         _throwingStateMachine._bps = this;
-
+        _pushingStateMachine = _anim.GetBehaviour<PushingStateMachine>();
+        _pushingStateMachine._bps = this;
         //Set Base State
         State = States.Walking;
 
@@ -87,13 +89,20 @@ public class PlayerBehaviour : MonoBehaviour {
         //Get input from Any Horizontal or Vertical Axis
         //Normalize
         InputMovementBase = new Vector3(Input.GetAxis(_input.HorizontalAxis), 0,Input.GetAxis(_input.VerticalAxis)).normalized;  //Used for base movement
+        if(State == States.PushingBox)
+        {
+            InputMovementBase = new Vector3(0, 0, Input.GetAxis(_input.VerticalAxis)).normalized;
+        }
         switch (State){
             case States.Walking:
+                //Coming out of PickUp v
                 if (_anim.GetLayerWeight(1) == 1)
                 {
                     _anim.SetLayerWeight(1, 0);
                     _currentPickup = null;
                 }
+                if (_cameraRotation.enabled == false)
+                    _cameraRotation.enabled = true;
                 break;
 
             case States.PickingUp:
@@ -113,6 +122,8 @@ public class PlayerBehaviour : MonoBehaviour {
                 break;
 
             case States.PushingBox:
+                if (_cameraRotation.enabled == true)
+                    _cameraRotation.enabled = false;               
                 break;
             case States.WalkingWithPickup:
                 if (_cameraRotation.enabled == false)
@@ -126,39 +137,37 @@ public class PlayerBehaviour : MonoBehaviour {
     }
 
     void FixedUpdate ()
+    {
+        Debug.Log(State);
+        ApplyGround();
+        ApplyGravity();
+
+        if(State == States.Walking || State == States.WalkingWithPickup || State == States.PushingBox)
         {
-        
-            ApplyGround();
-            ApplyGravity();
-
-            if(State == States.Walking || State == States.WalkingWithPickup)
-            {
-                ApplyMovementBase();
-            }
-
-            ApplyDragOnGround();
-
-            //Push Box
-            PushBox();
-
-            LimitXZVelocity();
-
-
-            Vector3 XZvel = Vector3.Scale(Velocity, new Vector3(1, 0, 1));
-            Vector3 localVelXZ = gameObject.transform.InverseTransformDirection(XZvel);
-
-            #region SetAnimatorProperties
-            _anim.SetFloat("VerticalVelocity", (localVelXZ.z * (_drag)) / _maximumXZVelocity);
-            _anim.SetFloat("HorizontalVelocity", (localVelXZ.x * (_drag)) / _maximumXZVelocity);
-
-            _anim.SetBool("PickUpObject", PickingUp);
-            #endregion
-
-        
-            DoMovement();
-
-
+            ApplyMovementBase();
         }
+
+
+        ApplyDragOnGround();
+
+        LimitXZVelocity();
+
+
+        Vector3 XZvel = Vector3.Scale(Velocity, new Vector3(1, 0, 1));
+        Vector3 localVelXZ = gameObject.transform.InverseTransformDirection(XZvel);
+        
+        #region SetAnimatorProperties
+        _anim.SetFloat("VerticalVelocity", (localVelXZ.z * (_drag)) / _maximumXZVelocity);
+        _anim.SetFloat("HorizontalVelocity", (localVelXZ.x * (_drag)) / _maximumXZVelocity);
+
+        _anim.SetBool("PickUpObject", PickingUp);
+        #endregion
+
+    
+        DoMovement();
+
+
+    }
 
     //Get relative direction from camera
     private Vector3 RelativeDirection(Vector3 direction)
@@ -232,30 +241,6 @@ public class PlayerBehaviour : MonoBehaviour {
         _char.Move(movement);
         }
 
-    //Allow Player To Push Boxes Around
-    private void PushBox()
-    {
-        //if Player pressed A with box in front of him - Go to push State
-        if(_pushBox == true)
-        {
-            RaycastHit hitInfo;
-            //Check if box is in front of player | Possibly replace with spherecast to check all around the player
-            if (Physics.Raycast(this.gameObject.transform.position, this.gameObject.transform.forward, out hitInfo,5, -1)){
-                if(hitInfo.transform.gameObject.tag == "Box")
-                {
-                    Debug.Log("Entering PushBox");
-                    State = States.PushingBox;
-                    Rigidbody currentBoxRB = hitInfo.transform.gameObject.GetComponent<Rigidbody>();
-                    currentBoxRB.AddForce(this.gameObject.transform.forward * 10f, ForceMode.Acceleration);
-                    //Make sure player can only move in the forward of the box | Abs will make it so the movement isn't negative 
-                    //InputMovementBoxPushing = new Vector3(Mathf.Abs((Input.GetAxisRaw("Horizontal") * hitInfo.transform.forward.x)), 0, Mathf.Abs(( Input.GetAxisRaw("Vertical") * hitInfo.transform.forward.z))).normalized;
-                    State = States.Walking;
-
-                }
-            }
-           // _pushBox = false;
-        }
-    }
 
     //Pick up Object - Gets called from pickup-able objects - Not used atm  
     public void PickUpObject(GameObject pickup)
