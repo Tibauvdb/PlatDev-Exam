@@ -31836,6 +31836,11 @@ Transform:
   m_Father: {fileID: 1084002849}
   m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &452759065 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4295346784629536, guid: 0b0a32aadbb63db4e9a2ae23c1dc7238,
+    type: 2}
+  m_PrefabInternal: {fileID: 2078155044}
 --- !u!1 &548172083 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1611580124603952, guid: 1b633c65b0af52f47ab0c21dac4c165c,
@@ -45725,10 +45730,10 @@ GameObject:
   - component: {fileID: 1048562921}
   - component: {fileID: 1048562920}
   - component: {fileID: 1048562926}
-  - component: {fileID: 1048562924}
   - component: {fileID: 1048562925}
+  - component: {fileID: 1048562924}
   m_Layer: 0
-  m_Name: PushBox
+  m_Name: KillerBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45824,7 +45829,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -70825,6 +70830,59 @@ MonoBehaviour:
   _maxStep: 100
   _currentStep: 1
   Throwing: 0
+--- !u!1 &1825897912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1825897913}
+  - component: {fileID: 1825897915}
+  - component: {fileID: 1825897914}
+  m_Layer: 9
+  m_Name: KnockedOutCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1825897913
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1825897912}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 452759065}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1825897914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1825897912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cbfa12258a62b849a6a8264b2524872, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &1825897915
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1825897912}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1849570654
 GameObject:
   m_ObjectHideFlags: 0

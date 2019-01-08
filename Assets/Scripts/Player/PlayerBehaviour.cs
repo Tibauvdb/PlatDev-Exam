@@ -15,13 +15,15 @@ public class PlayerBehaviour : MonoBehaviour {
     private ThrowingEndStateMachine _throwingStateMachine;
     private PushingStateMachine _pushingStateMachine;
     private RotateWithMouse _cameraRotation;
+
     public enum States
     {
         Walking,
         Stairs,
         PushingBox,
         PickingUp,
-        WalkingWithPickup
+        WalkingWithPickup,
+        KnockedOut
     }
 
     //Create state
@@ -32,7 +34,6 @@ public class PlayerBehaviour : MonoBehaviour {
     [SerializeField] private float _drag;
     [SerializeField] private float _maximumXZVelocity = (30 * 1000) / (60 * 60); //[m/s] 30km/h
     [SerializeField] private float _jumpHeight; //[m]
-    [SerializeField] private Transform _rayCastTransform;
 
     private Transform _absoluteTransform;
     private CharacterController _char;
@@ -49,26 +50,30 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private GameObject _currentPickup;
     public bool PickingUp { get; set; }
-    //private bool _canThrow;
-
+    public bool IsKnockedOut { get; set; }
  
 
     void Start ()
         {
         //Set Components;
+        #region Components
         _char = this.gameObject.GetComponent<CharacterController>();
         _absoluteTransform = Camera.main.transform;
         _anim = transform.GetChild(0).GetComponent<Animator>();
         _input = GameObject.Find("GameManager").GetComponent<InputManager>();
         IKGrab = this.gameObject.transform.GetChild(0).GetComponent<IKGrabBehaviour>();
         _cameraRotation = this.gameObject.GetComponent<RotateWithMouse>();
+        #endregion
         //Set stateMachineBehaviour
+        #region StateMachine Behaviours
         _pickupStateMachine = _anim.GetBehaviour<PickUpStateMachine>();
         _pickupStateMachine._bps = this;
         _throwingStateMachine = _anim.GetBehaviour<ThrowingEndStateMachine>();
         _throwingStateMachine._bps = this;
         _pushingStateMachine = _anim.GetBehaviour<PushingStateMachine>();
         _pushingStateMachine._bps = this;
+        #endregion
+
         //Set Base State
         State = States.Walking;
 
@@ -89,12 +94,11 @@ public class PlayerBehaviour : MonoBehaviour {
         //Get input from Any Horizontal or Vertical Axis
         //Normalize
         InputMovementBase = new Vector3(Input.GetAxis(_input.HorizontalAxis), 0,Input.GetAxis(_input.VerticalAxis)).normalized;  //Used for base movement
-        if(State == States.PushingBox)
-        {
-            InputMovementBase = new Vector3(0, 0, Input.GetAxis(_input.VerticalAxis)).normalized;
-        }
+
+        #region Switch Case States
         switch (State){
             case States.Walking:
+
                 //Coming out of PickUp v
                 if (_anim.GetLayerWeight(1) == 1)
                 {
@@ -122,18 +126,30 @@ public class PlayerBehaviour : MonoBehaviour {
                 break;
 
             case States.PushingBox:
+
                 if (_cameraRotation.enabled == true)
-                    _cameraRotation.enabled = false;               
+                    _cameraRotation.enabled = false;
+
+                InputMovementBase = new Vector3(0, 0, Input.GetAxis(_input.VerticalAxis)).normalized;
+
                 break;
+
             case States.WalkingWithPickup:
+
                 if (_cameraRotation.enabled == false)
                     _cameraRotation.enabled = true;
                 break;
+
             case States.Stairs:
+
                 break;
 
+            case States.KnockedOut:
+
+                break;
 
         }
+        #endregion
     }
 
     void FixedUpdate ()
@@ -241,13 +257,10 @@ public class PlayerBehaviour : MonoBehaviour {
         _char.Move(movement);
         }
 
-
     //Pick up Object - Gets called from pickup-able objects - Not used atm  
     public void PickUpObject(GameObject pickup)
     {
         //Enter this script when player wants to pick up object in front of them
-        //Debug.Log("Picking up object");
-        //Play Pickup Animation
         _anim.Play("PickUp", 0);
         //Save current pickup
         _currentPickup = pickup;
@@ -255,6 +268,14 @@ public class PlayerBehaviour : MonoBehaviour {
         PickingUp = true;
         State = States.PickingUp;
         
+    }
+
+    public void KnockedOut()
+    {
+        //If AI gets too close, player will get knocked out
+        IsKnockedOut = true;
+        State = States.KnockedOut;
+        _anim.SetTrigger("KnockedOut");
     }
 
     //Found On Internet - Not Mine
