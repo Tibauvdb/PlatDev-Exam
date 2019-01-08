@@ -117,7 +117,7 @@ public class BaseAIBehaviour : MonoBehaviour {
             if (newDestination >= 99)
             {
                 //Go To random Spot on NavMesh
-                Vector3 dir = Random.insideUnitSphere * _maxRoamDistance;
+                Vector3 dir =this.gameObject.transform.position + ( Random.insideUnitSphere * _maxRoamDistance );
                 NavMeshHit hit;
                 NavMesh.SamplePosition(dir, out hit, Random.Range(0f, _maxRoamDistance), 1);
 

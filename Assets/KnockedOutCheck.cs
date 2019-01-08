@@ -12,7 +12,7 @@ public class KnockedOutCheck : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         //if AI enters
-        if(other.tag == "AI")
+        if(other.tag == "AI" && other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut == false)
         {
             Debug.Log("AI enters");
             _playerBh.KnockedOut();

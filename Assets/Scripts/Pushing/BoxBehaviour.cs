@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AllowPush : MonoBehaviour {
+public class BoxBehaviour : MonoBehaviour {
     private Animator _anim;
     private InputManager _input;
 
@@ -18,12 +18,6 @@ public class AllowPush : MonoBehaviour {
         _input = GameObject.Find("GameManager").GetComponent<InputManager>();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-        if (_isPushing)
-            Push();
-	}
-
     private void OnTriggerStay(Collider other)
     {
         if(other.gameObject.tag == "Player")
@@ -51,14 +45,15 @@ public class AllowPush : MonoBehaviour {
                 this.gameObject.transform.parent = null;
             }
         }
+
+        if(other.gameObject.tag == "AI" && _isPushing)
+        {
+            if(_player.gameObject.GetComponent<PlayerBehaviour>().Velocity.x > 0 || _player.gameObject.GetComponent<PlayerBehaviour>().Velocity.z > 0)
+            {
+                other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut = true;
+            }
+        }
     }
 
 
-    private void Push()
-    {
-        //if (_anim.GetFloat("VerticalVelocity") > 0.4f)
-        //{
-        //this.gameObject.GetComponent<Rigidbody>().AddForce(_player.forward * PushForce);
-        //}
-    }
 }

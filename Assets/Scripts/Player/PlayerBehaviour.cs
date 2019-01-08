@@ -77,9 +77,6 @@ public class PlayerBehaviour : MonoBehaviour {
         //Set Base State
         State = States.Walking;
 
-       
-
-
         #region Dependencies
         //dependency error if charactercontroller is not attached
 #if DEBUG

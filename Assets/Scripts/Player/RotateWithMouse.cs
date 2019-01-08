@@ -19,10 +19,10 @@ public class RotateWithMouse : MonoBehaviour {
         tempRot.y += Input.GetAxis(_input.CamHorizontal) * _speed;
         transform.localEulerAngles = tempRot;
 
-        Vector3 rotationCamePivot =_camPivot.transform.localEulerAngles;
-        rotationCamePivot.x += Input.GetAxis(_input.CamVertical) * -_speed;
-        rotationCamePivot.x = PlayerBehaviour.ClampAngle(rotationCamePivot.x, -10, 50);
-        _camPivot.localEulerAngles = rotationCamePivot;
+        Vector3 rotationCamPivot =_camPivot.transform.localEulerAngles;
+        rotationCamPivot.x += Input.GetAxis(_input.CamVertical) * -_speed;
+        rotationCamPivot.x = PlayerBehaviour.ClampAngle(rotationCamPivot.x, -10, 50);
+        _camPivot.localEulerAngles = rotationCamPivot;
 
         
     }
