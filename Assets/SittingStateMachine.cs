@@ -6,7 +6,7 @@ public class SittingStateMachine : StateMachineBehaviour {
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        GameObject.Find("Player").transform.position -= GameObject.Find("Player").transform.forward/2;
+        //GameObject.Find("Player").transform.position -= GameObject.Find("Player").transform.forward/2;
 
     }
 
