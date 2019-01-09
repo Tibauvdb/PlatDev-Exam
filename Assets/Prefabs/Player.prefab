@@ -2288,6 +2288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9466c8994c51f7d4682915e541363667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowRotation: 0
+  RaiseCam: 0
   _camPivot: {fileID: 4171611154824958}
 --- !u!114 &114353062750831754
 MonoBehaviour:

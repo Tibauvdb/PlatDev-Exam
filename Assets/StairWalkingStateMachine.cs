@@ -78,11 +78,12 @@ public class StairWalkingStateMachine : StateMachineBehaviour {
 
     void FloorHitPosition(Transform t, ref Vector3 targetPos, ref Quaternion targetRot, Vector3 direction)
     {
+        Debug.Log("Calling FloorHitPos");
         RaycastHit hit;
         Vector3 origin = t.position;
 
         //Add an offset
-        origin += direction * 0.1f;
+        origin += direction * 0.3f;
 
         //Raycast
         Debug.DrawRay(origin, -direction, Color.red);
@@ -90,7 +91,8 @@ public class StairWalkingStateMachine : StateMachineBehaviour {
         {
             targetPos = hit.point;
             //rotate based around normal
-            Quaternion rot = Quaternion.LookRotation(_bps.gameObject.transform.forward);
+            GameObject player = GameObject.Find("Player");
+            Quaternion rot = Quaternion.LookRotation(player.transform.forward);
             targetRot = Quaternion.FromToRotation(Vector3.up, hit.normal) * rot;
         }
     }

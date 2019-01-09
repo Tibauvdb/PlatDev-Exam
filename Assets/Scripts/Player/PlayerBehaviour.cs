@@ -75,6 +75,7 @@ public class PlayerBehaviour : MonoBehaviour {
         _pushingStateMachine._bps = this;
         _stairWalkingStateMachine = _anim.GetBehaviour<StairWalkingStateMachine>();
         _stairWalkingStateMachine._bps = this;
+        Debug.Log(_stairWalkingStateMachine._bps);
         #endregion
 
         //Set Base State
