@@ -24,6 +24,7 @@ public class PlayerBehaviour : MonoBehaviour {
         PushingBox,
         PickingUp,
         WalkingWithPickup,
+        Sitting,
         KnockedOut
     }
 
@@ -146,6 +147,10 @@ public class PlayerBehaviour : MonoBehaviour {
 
                 break;
 
+            case States.Sitting:
+
+                break;
+
             case States.KnockedOut:
 
                 break;
@@ -158,7 +163,8 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         //Debug.Log(State);
         ApplyGround();
-        ApplyGravity();
+        if(State!=States.Sitting)
+            ApplyGravity();
 
         if(State == States.Walking || State == States.WalkingWithPickup || State == States.PushingBox)
         {
