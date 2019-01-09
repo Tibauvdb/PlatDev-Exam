@@ -102,13 +102,16 @@ public class PlayerBehaviour : MonoBehaviour {
                     _anim.SetLayerWeight(1, 0);
                     _currentPickup = null;
                 }
-                if (_cameraRotation.enabled == false)
-                    _cameraRotation.enabled = true;
+
+                if (!_cameraRotation.AllowRotation)
+                    _cameraRotation.AllowRotation = true;
+                if(_cameraRotation.RaiseCam)
+                    _cameraRotation.RaiseCam = false;
                 break;
 
             case States.PickingUp:
 
-                _cameraRotation.enabled = false;
+                _cameraRotation.AllowRotation = false;
 
                 if (_currentPickup != null && PickingUp == true)
                 {
@@ -124,17 +127,15 @@ public class PlayerBehaviour : MonoBehaviour {
 
             case States.PushingBox:
 
-                if (_cameraRotation.enabled == true)
-                    _cameraRotation.enabled = false;
+                RaiseCameraAndStopRotation();
 
                 InputMovementBase = new Vector3(0, 0, Input.GetAxis(_input.VerticalAxis)).normalized;
 
                 break;
 
             case States.WalkingWithPickup:
-
-                if (_cameraRotation.enabled == false)
-                    _cameraRotation.enabled = true;
+                _cameraRotation.AllowRotation = true;
+                _cameraRotation.RaiseCam = true;
                 break;
 
             case States.Stairs:
@@ -275,6 +276,13 @@ public class PlayerBehaviour : MonoBehaviour {
         _anim.SetTrigger("KnockedOut");
     }
 
+    private void RaiseCameraAndStopRotation()
+    {
+        if (_cameraRotation.AllowRotation == true)
+            _cameraRotation.AllowRotation = false;
+
+        _cameraRotation.RaiseCam = true;
+    }
     //Found On Internet - Not Mine
     //Function to clamp angles | Used to clamp rotation of camera
     public static float ClampAngle(float angle, float min, float max)

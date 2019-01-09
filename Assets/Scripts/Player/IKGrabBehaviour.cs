@@ -55,7 +55,6 @@ public class IKGrabBehaviour : MonoBehaviour {
 
             if(Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.34f)
             {
-                Debug.Log("setting Right Parent");
                 PickUp.parent = RightHand.transform;
                 PickUp.position = RightHand.transform.position;
             }
