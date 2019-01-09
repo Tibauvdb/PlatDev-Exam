@@ -48,7 +48,6 @@ public class RotateWithMouse : MonoBehaviour {
         }
         else if(!RaiseCam)
         {
-            Debug.Log("Moving Cam Downwards");
             _camPivot.position = Vector3.Lerp(_camPivot.position, _originalCameraPosition.position, Time.deltaTime);
         }
     }

@@ -14,6 +14,7 @@ public class PlayerBehaviour : MonoBehaviour {
     private PickUpStateMachine _pickupStateMachine;
     private ThrowingEndStateMachine _throwingStateMachine;
     private PushingStateMachine _pushingStateMachine;
+    private StairWalkingStateMachine _stairWalkingStateMachine;
     private RotateWithMouse _cameraRotation;
 
     public enum States
@@ -72,6 +73,8 @@ public class PlayerBehaviour : MonoBehaviour {
         _throwingStateMachine._bps = this;
         _pushingStateMachine = _anim.GetBehaviour<PushingStateMachine>();
         _pushingStateMachine._bps = this;
+        _stairWalkingStateMachine = _anim.GetBehaviour<StairWalkingStateMachine>();
+        _stairWalkingStateMachine._bps = this;
         #endregion
 
         //Set Base State
@@ -152,7 +155,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void FixedUpdate ()
     {
-        Debug.Log(State);
+        //Debug.Log(State);
         ApplyGround();
         ApplyGravity();
 
