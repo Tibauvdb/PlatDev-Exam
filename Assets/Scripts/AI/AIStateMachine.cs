@@ -27,7 +27,7 @@ public class AIStateMachine : StateMachineBehaviour {
 
 	// OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
 	override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if (AIBehaviour.IsAIFollowing)
+        if (AIBehaviour.name.Contains("Type02") ||AIBehaviour.name.Contains("Type01") && AIBehaviour.IsAIFollowing)
         {
             //When following player, make head follow player
             animator.SetLookAtWeight(1);

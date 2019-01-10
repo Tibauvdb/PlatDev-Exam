@@ -8,6 +8,7 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     public bool IsAIKnockedOut;
     public bool IsAIFollowing;
+    public bool IsAILooking;
     public Vector3 PlayerPosition;
     private float _knockedOutTimer = 10;
 
@@ -17,7 +18,19 @@ public class BaseAIBehaviour : MonoBehaviour {
     private Animator _anim;
     private AIStateMachine _aiStateMachine;
 
+    private  ConditionNode.Condition _aiSpecificCondition;
+    private ActionNode.Action _aiSpecificAction;
 	void Start () {
+        if (this.name.Contains("Type01"))
+        {
+            _aiSpecificCondition = IsFollowing;
+            _aiSpecificAction = FollowPlayer;
+        }
+        else if (this.name.Contains("Type02"))
+        {
+            _aiSpecificCondition = IsFollowing;
+            _aiSpecificAction = LookAtPlayer;
+        }
 
         #region Start
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
@@ -33,8 +46,8 @@ public class BaseAIBehaviour : MonoBehaviour {
                     new ActionNode(KnockedOut),
                     new ActionNode(KnockedOutTimer)),
                 new SequenceNode(
-                    new ConditionNode(IsFollowing),
-                    new ActionNode(FollowPlayer)),
+                    new ConditionNode(_aiSpecificCondition),
+                    new ActionNode(_aiSpecificAction)),
                 new ActionNode(Roaming));
 
         StartCoroutine(RunTree());
@@ -104,6 +117,16 @@ public class BaseAIBehaviour : MonoBehaviour {
         //Debug.Log("Following Player");
         _agent.SetDestination(PlayerPosition);
         yield return NodeResult.Running;
+    }
+
+    bool IsLooking()
+    {
+        return IsAILooking;
+    }
+
+    IEnumerator<NodeResult> LookAtPlayer()
+    {
+        yield return NodeResult.Succes;
     }
 
     IEnumerator<NodeResult> Roaming()

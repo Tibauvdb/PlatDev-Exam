@@ -9,6 +9,7 @@ public class AllowSitting : MonoBehaviour {
 
     private bool _allowInteraction = false;
 
+    private Vector3 _sitPos;
     private enum SittingStates
     {
         Standing,
@@ -27,6 +28,7 @@ public class AllowSitting : MonoBehaviour {
 
     private void Update()
     {
+        Debug.Log(_currSitState);
         if (_allowInteraction == true)
         {
              switch (_currSitState)
@@ -65,11 +67,11 @@ public class AllowSitting : MonoBehaviour {
         //Start Standing to Sitting Animation
         _anim.SetTrigger("IsSitting");
         _anim.ResetTrigger("IsStandingUp");
-
+        
         _player.transform.forward = Vector3.Lerp(_player.transform.forward, this.gameObject.transform.forward, Time.deltaTime*2);
 
         //Check if Animation is done playing
-        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Sitting"))
+        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Sitting")) 
         {
             _currSitState = SittingStates.Sitting;
             _player.GetComponent<PlayerBehaviour>().State = PlayerBehaviour.States.Sitting;

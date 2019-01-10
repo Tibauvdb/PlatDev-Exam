@@ -48,8 +48,6 @@ public class PlayerBehaviour : MonoBehaviour {
     [HideInInspector] public Vector3 InputMovementBase { get; set; }
     [HideInInspector] public Vector3 InputMovementBoxPushing { get; set; }
 
-    private bool _pushBox = false;
-
     public RaycastHit Hit { get; set; }
 
     private GameObject _currentPickup;
@@ -80,6 +78,7 @@ public class PlayerBehaviour : MonoBehaviour {
         _stairWalkingStateMachine._bps = this;
         _sittingStateMachine = _anim.GetBehaviour<SittingStateMachine>();
         _sittingStateMachine._bps = this;
+        Debug.Log(_sittingStateMachine._bps);
         #endregion
 
         //Set Base State
@@ -155,7 +154,7 @@ public class PlayerBehaviour : MonoBehaviour {
                 break;
 
             case States.KnockedOut:
-
+                _cameraRotation.AllowRotation = false;
                 break;
 
         }

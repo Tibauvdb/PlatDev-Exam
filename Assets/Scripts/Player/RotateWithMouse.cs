@@ -14,6 +14,10 @@ public class RotateWithMouse : MonoBehaviour {
     private float _speed = 2.0f;
 
     private PlayerBehaviour.States _currState;
+
+    private float _lerpValue = 0;
+    [SerializeField]
+    private bool _isSitting = false;
     // Use this for initialization
     void Start () {
         Cursor.lockState = CursorLockMode.Locked;
@@ -41,13 +45,25 @@ public class RotateWithMouse : MonoBehaviour {
             tempRot = transform.localEulerAngles;
             tempRot.y += Input.GetAxis(_input.CamHorizontal) * _speed;
             transform.localEulerAngles = tempRot;
+            if (_isSitting && _currState == PlayerBehaviour.States.Walking)
+            {
+                Debug.Log("LerpValue: " + _lerpValue);
+                    _lerpValue += Time.deltaTime/2;
+                _camPivot.transform.forward = Vector3.Lerp(_camPivot.transform.forward, _playerBH.transform.forward, _lerpValue);
+
+                if (_lerpValue >= 1f)
+                {
+                    _isSitting = false;
+                    _lerpValue = 0;
+                }
+            }
         }
-        else
+        else //Player Is Sitting -> Allow camera to rotate freely
         {
             tempRot = _camPivot.localEulerAngles;
             tempRot.y += Input.GetAxis(_input.CamHorizontal) * _speed;
             _camPivot.localEulerAngles = tempRot;
-           
+            _isSitting = true;
         }
 
         Vector3 rotationCamPivot = _camPivot.transform.localEulerAngles;
@@ -55,8 +71,8 @@ public class RotateWithMouse : MonoBehaviour {
         rotationCamPivot.x = PlayerBehaviour.ClampAngle(rotationCamPivot.x, -10, 50);
         _camPivot.localEulerAngles = rotationCamPivot;
 
-        if(_currState==PlayerBehaviour.States.Sitting)
-            _camPivot.localEulerAngles = new Vector3(rotationCamPivot.x, tempRot.y-180, 0);
+        if (_currState == PlayerBehaviour.States.Sitting)
+            _camPivot.localEulerAngles = new Vector3(rotationCamPivot.x, tempRot.y, 0);
     }
     private void RaiseCamera()
     {

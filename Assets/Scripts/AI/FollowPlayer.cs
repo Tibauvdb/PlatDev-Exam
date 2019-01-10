@@ -11,8 +11,8 @@ public class FollowPlayer : MonoBehaviour {
 
     //Make sure Linecast ignores the "Pickups" Layer
     private int _layerMask = 1 << 11;
-
-	void Start () {
+    PlayerBehaviour.States _currState; 
+    void Start () {
         //Get player from scene
         _player = GameObject.Find("Player").transform;
         _aiBehaviour = this.gameObject.GetComponent<BaseAIBehaviour>();
@@ -22,13 +22,15 @@ public class FollowPlayer : MonoBehaviour {
 	
 	void Update () {
         //First check if player is in visionDistance
-		if(Vector3.Distance(this.gameObject.transform.position,_player.position) <= _visionDistance)
+        _currState = _player.gameObject.GetComponent<PlayerBehaviour>().State;
+
+        if (Vector3.Distance(this.gameObject.transform.position,_player.position) <= _visionDistance)
         {
 
             //If Player is in VisionDistance -> Check if nothing is blocking LOS
             RaycastHit hit;
             Debug.DrawLine(this.gameObject.transform.position, _player.position, Color.red);
-            if(Physics.Linecast(this.gameObject.transform.position,_player.position,out hit,_layerMask))
+            if(Physics.Linecast(this.gameObject.transform.position,_player.position,out hit,_layerMask) || _currState == PlayerBehaviour.States.Sitting || _currState == PlayerBehaviour.States.KnockedOut)
             {
                 //If the lineCast returns true, something is in between the player & AI
                 if (_aiBehaviour.IsAIFollowing)
@@ -40,6 +42,7 @@ public class FollowPlayer : MonoBehaviour {
             }
             else
             {
+                Debug.Log("Folliwing Player");
                 _aiBehaviour.IsAIFollowing = true;
                 _aiBehaviour.PlayerPosition = _player.position;
             }              
