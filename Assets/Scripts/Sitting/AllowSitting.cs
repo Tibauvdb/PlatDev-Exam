@@ -28,7 +28,6 @@ public class AllowSitting : MonoBehaviour {
 
     private void Update()
     {
-        Debug.Log(_currSitState);
         if (_allowInteraction == true)
         {
              switch (_currSitState)

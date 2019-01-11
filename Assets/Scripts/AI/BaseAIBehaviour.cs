@@ -18,18 +18,19 @@ public class BaseAIBehaviour : MonoBehaviour {
     private Animator _anim;
     private AIStateMachine _aiStateMachine;
 
-    private  ConditionNode.Condition _aiSpecificCondition;
-    private ActionNode.Action _aiSpecificAction;
+    public  ConditionNode.Condition AISpecificCondition;
+    public ActionNode.Action AISpecificAction;
 	void Start () {
         if (this.name.Contains("Type01"))
         {
-            _aiSpecificCondition = IsFollowing;
-            _aiSpecificAction = FollowPlayer;
+            AISpecificCondition = IsFollowing;
+            AISpecificAction = FollowPlayer;
         }
         else if (this.name.Contains("Type02"))
         {
-            _aiSpecificCondition = IsFollowing;
-            _aiSpecificAction = LookAtPlayer;
+            AISpecificCondition = IsLooking;
+            AISpecificAction = LookAtPlayer;
+
         }
 
         #region Start
@@ -46,8 +47,8 @@ public class BaseAIBehaviour : MonoBehaviour {
                     new ActionNode(KnockedOut),
                     new ActionNode(KnockedOutTimer)),
                 new SequenceNode(
-                    new ConditionNode(_aiSpecificCondition),
-                    new ActionNode(_aiSpecificAction)),
+                    new ConditionNode(AISpecificCondition),
+                    new ActionNode(AISpecificAction)),
                 new ActionNode(Roaming));
 
         StartCoroutine(RunTree());
@@ -57,6 +58,11 @@ public class BaseAIBehaviour : MonoBehaviour {
     {
         _anim.SetFloat("HorizontalVelocity", -_agent.velocity.z * this.gameObject.transform.forward.z);
         _anim.SetFloat("VerticalVelocity", _agent.velocity.x * this.gameObject.transform.forward.x);
+        if (this.gameObject.name.Contains("Type02"))
+        {
+
+        Debug.Log(IsAILooking);
+        }
     }
 
     IEnumerator RunTree()

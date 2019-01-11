@@ -32,24 +32,38 @@ public class FollowPlayer : MonoBehaviour {
             Debug.DrawLine(this.gameObject.transform.position, _player.position, Color.red);
             if(Physics.Linecast(this.gameObject.transform.position,_player.position,out hit,_layerMask) || _currState == PlayerBehaviour.States.Sitting || _currState == PlayerBehaviour.States.KnockedOut)
             {
+                Debug.Log("entering Raycast " + this.gameObject.name);
                 //If the lineCast returns true, something is in between the player & AI
-                if (_aiBehaviour.IsAIFollowing)
+                if (this.gameObject.name.Contains("Type01"))
+                    _aiBehaviour.IsAIFollowing = false;
+                if (this.gameObject.name.Contains("Type02"))
                 {
-                _aiBehaviour.IsAIFollowing = false;
+                    //Doesn't happen
+                    _aiBehaviour.IsAILooking = false;
+                    Debug.Log("it be");
+                }
                 //Reset Agent
                 _aiBehaviour.ResetAgent();
-                }
+                
             }
             else
             {
-                Debug.Log("Folliwing Player");
-                _aiBehaviour.IsAIFollowing = true;
+                //Check if following or looking type
+                if(this.gameObject.name.Contains("Type01"))
+                    _aiBehaviour.IsAIFollowing = true;
+                if (this.gameObject.name.Contains("Type02"))
+                    _aiBehaviour.IsAILooking = true;
+
                 _aiBehaviour.PlayerPosition = _player.position;
             }              
         }
-        else if(_aiBehaviour.IsAIFollowing)
+        else
         {
-            _aiBehaviour.IsAIFollowing = false;
+            if (this.gameObject.name.Contains("Type01"))
+                _aiBehaviour.IsAIFollowing = false;
+            if (this.gameObject.name.Contains("Type02"))
+                _aiBehaviour.IsAILooking = false;
         }
+
 	}
 }

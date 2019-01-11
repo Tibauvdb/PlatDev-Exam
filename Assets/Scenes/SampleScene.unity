@@ -64486,7 +64486,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh4670
+  m_Name: pb_Mesh4736
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -71151,7 +71151,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4295346784629536, guid: 0b0a32aadbb63db4e9a2ae23c1dc7238, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1.22
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4295346784629536, guid: 0b0a32aadbb63db4e9a2ae23c1dc7238, type: 2}
       propertyPath: m_LocalPosition.z
@@ -71179,7 +71179,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4327106930519520, guid: 0b0a32aadbb63db4e9a2ae23c1dc7238, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0.06
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4171611154824958, guid: 0b0a32aadbb63db4e9a2ae23c1dc7238, type: 2}
       propertyPath: m_LocalRotation.w

@@ -78,7 +78,6 @@ public class PlayerBehaviour : MonoBehaviour {
         _stairWalkingStateMachine._bps = this;
         _sittingStateMachine = _anim.GetBehaviour<SittingStateMachine>();
         _sittingStateMachine._bps = this;
-        Debug.Log(_sittingStateMachine._bps);
         #endregion
 
         //Set Base State
@@ -163,7 +162,6 @@ public class PlayerBehaviour : MonoBehaviour {
 
     void FixedUpdate ()
     {
-        Debug.Log(State);
         ApplyGround();
         if(State!=States.Sitting)
             ApplyGravity();
