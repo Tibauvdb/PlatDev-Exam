@@ -36,7 +36,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     [SerializeField] private float _acceleration; //[m/s2]
     [SerializeField] private float _drag;
-    [SerializeField] private float _maximumXZVelocity = (30 * 1000) / (60 * 60); //[m/s] 30km/h
+    [SerializeField] private float _maximumXZVelocity; //[m/s] 8.3m/s
     [SerializeField] private float _jumpHeight; //[m]
 
     private Transform _absoluteTransform;

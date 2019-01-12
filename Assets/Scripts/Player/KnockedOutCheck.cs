@@ -12,9 +12,8 @@ public class KnockedOutCheck : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         //if AI enters
-        if(other.name.Contains("Type01") && other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut == false)
+        if(other.name.Contains("Type01") && other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut == false && _playerBh.State != PlayerBehaviour.States.Sitting)
         {
-            Debug.Log("AI enters");
             _playerBh.KnockedOut();
         }
     }

@@ -9,7 +9,9 @@ public class BaseAIBehaviour : MonoBehaviour {
     public bool IsAIKnockedOut;
     public bool IsAIFollowing;
     public bool IsAILooking;
+
     public Vector3 PlayerPosition;
+
     private float _knockedOutTimer = 10;
 
     private NavMeshAgent _agent;
@@ -20,24 +22,19 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     public  ConditionNode.Condition AISpecificCondition;
     public ActionNode.Action AISpecificAction;
+
+    private AiFieldOfView _aiFOV;
+
 	void Start () {
-        if (this.name.Contains("Type01"))
-        {
-            AISpecificCondition = IsFollowing;
-            AISpecificAction = FollowPlayer;
-        }
-        else if (this.name.Contains("Type02"))
-        {
-            AISpecificCondition = IsLooking;
-            AISpecificAction = LookAtPlayer;
+        //Check if the AI is following or looking type
+        CheckAIType();
 
-        }
-
-        #region Start
+        #region Set Components
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         _anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
         _aiStateMachine = _anim.GetBehaviour<AIStateMachine>();
         _aiStateMachine.AIBehaviour = this;
+        _aiFOV = this.gameObject.GetComponent<AiFieldOfView>();
         #endregion
 
         _rootNode =
@@ -58,11 +55,6 @@ public class BaseAIBehaviour : MonoBehaviour {
     {
         _anim.SetFloat("HorizontalVelocity", -_agent.velocity.z * this.gameObject.transform.forward.z);
         _anim.SetFloat("VerticalVelocity", _agent.velocity.x * this.gameObject.transform.forward.x);
-        if (this.gameObject.name.Contains("Type02"))
-        {
-
-        Debug.Log(IsAILooking);
-        }
     }
 
     IEnumerator RunTree()
@@ -113,8 +105,8 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     bool IsFollowing()
     {
-        //Debug.Log("IsFollowing " + IsAIFollowing);
-        return IsAIFollowing; 
+        IsAIFollowing = _aiFOV.CheckFieldOfView(true);
+        return IsAIFollowing;
     }
 
     IEnumerator<NodeResult> FollowPlayer()
@@ -127,6 +119,7 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     bool IsLooking()
     {
+        IsAILooking = _aiFOV.CheckFieldOfView(false);
         return IsAILooking;
     }
 
@@ -164,5 +157,20 @@ public class BaseAIBehaviour : MonoBehaviour {
     {
         _agent.isStopped = true;
         _agent.ResetPath();
+    }
+
+    private void CheckAIType()
+    {
+        if (this.name.Contains("Type01"))
+        {
+            AISpecificCondition = IsFollowing;
+            AISpecificAction = FollowPlayer;
+        }
+        else if (this.name.Contains("Type02"))
+        {
+            AISpecificCondition = IsLooking;
+            AISpecificAction = LookAtPlayer;
+
+        }
     }
 }

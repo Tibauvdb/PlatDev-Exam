@@ -21,6 +21,7 @@ public class FollowPlayer : MonoBehaviour {
 	}
 	
 	void Update () {
+        #region Previous
         //First check if player is in visionDistance
         _currState = _player.gameObject.GetComponent<PlayerBehaviour>().State;
 
@@ -35,6 +36,8 @@ public class FollowPlayer : MonoBehaviour {
                 Debug.Log("entering Raycast " + this.gameObject.name);
                 //If the lineCast returns true, something is in between the player & AI
                 if (this.gameObject.name.Contains("Type01"))
+                    if(_aiBehaviour.IsAIFollowing)
+                        _aiBehaviour.ResetAgent();
                     _aiBehaviour.IsAIFollowing = false;
                 if (this.gameObject.name.Contains("Type02"))
                 {
@@ -43,7 +46,6 @@ public class FollowPlayer : MonoBehaviour {
                     Debug.Log("it be");
                 }
                 //Reset Agent
-                _aiBehaviour.ResetAgent();
                 
             }
             else
@@ -64,6 +66,8 @@ public class FollowPlayer : MonoBehaviour {
             if (this.gameObject.name.Contains("Type02"))
                 _aiBehaviour.IsAILooking = false;
         }
+        #endregion
 
-	}
+
+    }
 }
