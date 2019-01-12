@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThrowingEndStateMachine : StateMachineBehaviour {
+public class ThrowingEndStateMachine : BaseStateMachineBehaviour {
     public PlayerBehaviour _bps { get; set; }
 
-	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+    private void Awake()
+    {
+        _bps = SetPlayerBehaviour(_bps);
+    }
+    // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         _bps.State = PlayerBehaviour.States.Walking;
 
         animator.SetLayerWeight(1, 0);

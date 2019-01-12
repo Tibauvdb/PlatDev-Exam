@@ -252,10 +252,6 @@ public class PlayerBehaviour : MonoBehaviour {
     private void SetStateMachines()
     {
         _pickupStateMachine = _anim.GetBehaviour<PickUpStateMachine>();
-        _throwingStateMachine = _anim.GetBehaviour<ThrowingEndStateMachine>();
-        _pushingStateMachine = _anim.GetBehaviour<PushingStateMachine>();
-        _stairWalkingStateMachine = _anim.GetBehaviour<StairWalkingStateMachine>();
-        _sittingStateMachine = _anim.GetBehaviour<SittingStateMachine>();
     }
 
     #region State Functions
