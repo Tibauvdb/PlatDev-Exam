@@ -62,14 +62,12 @@ public class ObjectThrow : MonoBehaviour {
 
     void Update () {
         if (Throwing == false)
-        {
-            DrawParabola();
-        }
+            DrawParabola();       
+        
         if(this.gameObject.transform.parent != null)
         {
             _parentPos = GameObject.Find("Player").transform.position;
             _parentRot = GameObject.Find("Player").transform.localRotation;
-
         }
 
         CalculateDistance();

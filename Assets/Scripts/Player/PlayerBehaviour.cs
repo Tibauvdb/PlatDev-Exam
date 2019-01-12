@@ -51,7 +51,10 @@ public class PlayerBehaviour : MonoBehaviour {
     private GameObject _currentPickup;
     public bool PickingUp { get; set; }
     public bool IsKnockedOut { get; set; }
- 
+
+    private bool _allowGravity = true;
+    private bool _allowMovementBaseCalculation = true;
+    private bool _allowDoMovement = true;
 
     void Start ()
         {
@@ -64,19 +67,8 @@ public class PlayerBehaviour : MonoBehaviour {
         _absoluteTransform = Camera.main.transform;
         _anim = transform.GetChild(0).GetComponent<Animator>();
         #endregion
-        //Set stateMachineBehaviour
-        #region StateMachine Behaviours
-        _pickupStateMachine = _anim.GetBehaviour<PickUpStateMachine>();
-        _pickupStateMachine._bps = this;
-        _throwingStateMachine = _anim.GetBehaviour<ThrowingEndStateMachine>();
-        _throwingStateMachine._bps = this;
-        _pushingStateMachine = _anim.GetBehaviour<PushingStateMachine>();
-        _pushingStateMachine._bps = this;
-        _stairWalkingStateMachine = _anim.GetBehaviour<StairWalkingStateMachine>();
-        _stairWalkingStateMachine._bps = this;
-        _sittingStateMachine = _anim.GetBehaviour<SittingStateMachine>();
-        _sittingStateMachine._bps = this;
-        #endregion
+
+        SetStateMachines();
 
         //Set Base State
         State = States.Walking;
@@ -99,59 +91,23 @@ public class PlayerBehaviour : MonoBehaviour {
         #region Switch Case States
         switch (State){
             case States.Walking:
-
-                //Coming out of PickUp v
-                if (_anim.GetLayerWeight(1) == 1)
-                {
-                    _anim.SetLayerWeight(1, 0);
-                    _currentPickup = null;
-                }
-
-                if (!_cameraRotation.AllowRotation)
-                    _cameraRotation.AllowRotation = true;
-                if(_cameraRotation.RaiseCam)
-                    _cameraRotation.RaiseCam = false;
+                WalkingState();
                 break;
-
             case States.PickingUp:
-
-                _cameraRotation.AllowRotation = false;
-
-                if (_currentPickup != null && PickingUp == true)
-                {
-                    _pickupStateMachine.PickUp = _currentPickup.transform;
-                    _pickupStateMachine.LookAtObj = _currentPickup.transform;
-                }
-                else if (_currentPickup != null && PickingUp == false)
-                {
-                    _pickupStateMachine.PickUp = null;
-                }
-
+                PickingUpState();             
                 break;
-
             case States.PushingBox:
-
-                RaiseCameraAndStopRotation();
-
-                InputMovementBase = new Vector3(0, 0, Input.GetAxis(_input.VerticalAxis)).normalized;
-
+                PushingBoxState();
                 break;
-
             case States.WalkingWithPickup:
-                _cameraRotation.AllowRotation = true;
-                _cameraRotation.RaiseCam = true;
+                WalkingWithPickUpState();
                 break;
-
             case States.Stairs:
-
                 break;
-
             case States.Sitting:
-
                 break;
-
             case States.KnockedOut:
-                _cameraRotation.AllowRotation = false;
+                KnockedOutState();
                 break;
 
         }
@@ -161,6 +117,7 @@ public class PlayerBehaviour : MonoBehaviour {
     void FixedUpdate ()
     {
         ApplyGround();
+
         if(State!=States.Sitting)
             ApplyGravity();
 
@@ -168,8 +125,6 @@ public class PlayerBehaviour : MonoBehaviour {
         {
             ApplyMovementBase();
         }
-
-
         ApplyDragOnGround();
 
         LimitXZVelocity();
@@ -184,6 +139,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         _anim.SetBool("PickUpObject", PickingUp);
         #endregion
+
 
         if(State != States.Sitting)
             DoMovement();
@@ -291,6 +247,70 @@ public class PlayerBehaviour : MonoBehaviour {
 
         _cameraRotation.RaiseCam = true;
     }
+
+    private void SetStateMachines()
+    {
+        _pickupStateMachine = _anim.GetBehaviour<PickUpStateMachine>();
+        _pickupStateMachine._bps = this;
+        _throwingStateMachine = _anim.GetBehaviour<ThrowingEndStateMachine>();
+        _throwingStateMachine._bps = this;
+        _pushingStateMachine = _anim.GetBehaviour<PushingStateMachine>();
+        _pushingStateMachine._bps = this;
+        _stairWalkingStateMachine = _anim.GetBehaviour<StairWalkingStateMachine>();
+        _stairWalkingStateMachine._bps = this;
+        _sittingStateMachine = _anim.GetBehaviour<SittingStateMachine>();
+        _sittingStateMachine._bps = this;
+    }
+
+    #region State Functions
+    private void WalkingState()
+    {
+        //Coming out of PickUp v
+        if (_anim.GetLayerWeight(1) == 1)
+        {
+            _anim.SetLayerWeight(1, 0);
+            _currentPickup = null;
+        }
+
+        if (!_cameraRotation.AllowRotation)
+            _cameraRotation.AllowRotation = true;
+        if (_cameraRotation.RaiseCam)
+            _cameraRotation.RaiseCam = false;
+    }
+    private void PickingUpState()
+    {
+        _cameraRotation.AllowRotation = false;
+
+        if (_currentPickup != null && PickingUp == true)
+        {
+            _pickupStateMachine.PickUp = _currentPickup.transform;
+            _pickupStateMachine.LookAtObj = _currentPickup.transform;
+        }
+        else if (_currentPickup != null && PickingUp == false)
+        {
+            _pickupStateMachine.PickUp = null;
+        }
+    }
+    private void PushingBoxState()
+    {
+
+        RaiseCameraAndStopRotation();
+
+        InputMovementBase = new Vector3(0, 0, Input.GetAxis(_input.VerticalAxis)).normalized;
+
+    }
+    private void WalkingWithPickUpState()
+    {
+        _cameraRotation.AllowRotation = true;
+        _cameraRotation.RaiseCam = true;
+    }
+    private void KnockedOutState()
+    {
+        _cameraRotation.AllowRotation = false;
+    }
+    #endregion
+
+
 
     //Found On Internet - Not Mine
     //Function to clamp angles | Used to clamp rotation of camera

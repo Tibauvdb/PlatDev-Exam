@@ -27,7 +27,7 @@ public class AIStateMachine : StateMachineBehaviour {
         }
 	}
 
-    private void SetLookAtPos(Animator animator, Vector3 lookAt)
+    public void SetLookAtPos(Animator animator, Vector3 lookAt)
     {
         //When following player, make head follow player
         animator.SetLookAtWeight(1);

@@ -5,11 +5,11 @@ using UnityEngine;
 public class InputManager : MonoBehaviour{
 
     #region Input
-     public string HorizontalAxis { get; set; }
-     public string VerticalAxis { get; set; }
-     public string CamHorizontal { get; set; }
-     public string CamVertical { get; set; }
-     public string A { get; set; }
-     public string Triggers { get; set; }
+    public string HorizontalAxis;
+    public string VerticalAxis;
+    public string CamHorizontal;
+    public string CamVertical;
+    public string A;
+    public string Triggers;
     #endregion
 }
