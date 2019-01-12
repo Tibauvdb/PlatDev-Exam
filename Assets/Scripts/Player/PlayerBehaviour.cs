@@ -262,6 +262,10 @@ public class PlayerBehaviour : MonoBehaviour {
         _sittingStateMachine._bps = this;
     }
 
+    private void SetUpStateMachineConnection()
+    {
+
+    }
     #region State Functions
     private void WalkingState()
     {

@@ -15,7 +15,8 @@ public class ParallelNode : CompositeNode
 
     public ParallelNode(Policy policy, params INode[] nodes) : base(nodes)
     {
-        _policy = policy;        }
+        _policy = policy;
+    }
 
     int count = 0;
 
