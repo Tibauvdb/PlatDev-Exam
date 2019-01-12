@@ -7,7 +7,6 @@ using UnityEngine.Assertions;
 //[RequireComponent(typeof(CharacterController))]
 public class PlayerBehaviour : MonoBehaviour {
 
-    //Create GetterSetter for Public Variables
     private InputManager _input;
 
     private PickUpStateMachine _pickupStateMachine;
@@ -30,7 +29,7 @@ public class PlayerBehaviour : MonoBehaviour {
     }
 
     //Create state
-    [SerializeField] public States State { get; set; }
+    public States State { get; set; }
     
 
     [SerializeField] private float _acceleration; //[m/s2]
@@ -38,14 +37,14 @@ public class PlayerBehaviour : MonoBehaviour {
     [SerializeField] private float _maximumXZVelocity; //[m/s] 8.3m/s
     [SerializeField] private float _jumpHeight; //[m]
 
-    private Transform _absoluteTransform;
+    private Transform _absoluteTransform; //Camera Transform
     private CharacterController _char;
     private Animator _anim;
 
     public Vector3 Velocity = Vector3.zero; // [m/s]
 
-    [HideInInspector] public Vector3 InputMovementBase { get; set; }
-    [HideInInspector] public Vector3 InputMovementBoxPushing { get; set; }
+    public Vector3 InputMovementBase { get; set; }
+    public Vector3 InputMovementBoxPushing { get; set; }
 
     public RaycastHit Hit { get; set; }
 

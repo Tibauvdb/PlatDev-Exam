@@ -10,6 +10,7 @@ public class AllowSitting : MonoBehaviour {
     private bool _allowInteraction = false;
 
     private Vector3 _sitPos;
+
     private enum SittingStates
     {
         Standing,

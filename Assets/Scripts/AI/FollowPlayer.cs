@@ -13,7 +13,7 @@ public class FollowPlayer : MonoBehaviour {
     private int _layerMask = 1 << 11;
     PlayerBehaviour.States _currState; 
     void Start () {
-        //Get player from scene
+        //Get player from scene - 
         _player = GameObject.Find("Player").transform;
         _aiBehaviour = this.gameObject.GetComponent<BaseAIBehaviour>();
 

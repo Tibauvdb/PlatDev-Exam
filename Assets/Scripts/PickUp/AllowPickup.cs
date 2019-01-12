@@ -7,13 +7,16 @@ public class AllowPickup : MonoBehaviour {
 
     private Animator _anim;
     private InputManager _input;
+
     private bool _isThrowing = false;
     public bool Thrown = false;
 
     private ObjectThrow _objectThrowScript;
+
     private void Start()
     {
         _anim = GameObject.Find("Model").GetComponent<Animator>();
+
         _input = GameObject.Find("GameManager").GetComponent<InputManager>();
         _objectThrowScript = this.gameObject.GetComponent<ObjectThrow>();
     }
