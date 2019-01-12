@@ -1,1 +1,1 @@
-![BCH compliance](https://bettercodehub.com/edge/badge/Tibauvdb/PlatDev-Exam?branch=master)
+<img src='https://bettercodehub.com/edge/badge/Tibauvdb/PlatDev-Exam?branch=master'>
