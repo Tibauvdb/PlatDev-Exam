@@ -6,7 +6,6 @@ public class BaseStateMachineBehaviour : StateMachineBehaviour {
 
     public PlayerBehaviour SetPlayerBehaviour(PlayerBehaviour PlayerBehaviourScript)
     {
-        Debug.Log("Happening");
         PlayerBehaviourScript = GameObject.Find("Player").GetComponent<PlayerBehaviour>();
         return PlayerBehaviourScript;
     }

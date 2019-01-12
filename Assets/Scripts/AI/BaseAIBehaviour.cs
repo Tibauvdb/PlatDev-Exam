@@ -67,7 +67,6 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     bool IsKnockedOut()
     {
-        //Debug.Log("IsKnockedOut" + IsAIKnockedOut);
         return IsAIKnockedOut;
     }
 
@@ -76,7 +75,6 @@ public class BaseAIBehaviour : MonoBehaviour {
         IsAIFollowing = false;
         //Stop AI from following path
         ResetAgent();
-        Debug.Log("KnockedOut | Playing Animation");
         //Play KnockedOut Animation
         _anim.ResetTrigger("IsRespawned");
         _anim.SetTrigger("IsKnockedOut");
@@ -85,7 +83,6 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     IEnumerator<NodeResult> KnockedOutTimer()
     {
-        //Debug.Log("KnockedOutTimer" + _knockedOutTimer);
         _knockedOutTimer -= Time.deltaTime ;
         
         if (_knockedOutTimer < 0)
@@ -99,7 +96,6 @@ public class BaseAIBehaviour : MonoBehaviour {
             _anim.SetTrigger("IsRespawned");
             yield return NodeResult.Failure;
         }
-        Debug.Log("Returning Running");
         yield return NodeResult.Succes;
     }
 
@@ -112,7 +108,6 @@ public class BaseAIBehaviour : MonoBehaviour {
     IEnumerator<NodeResult> FollowPlayer()
     {
         //Start Following The Player
-        //Debug.Log("Following Player");
         _agent.SetDestination(PlayerPosition);
         yield return NodeResult.Running;
     }
@@ -134,7 +129,6 @@ public class BaseAIBehaviour : MonoBehaviour {
         {
 
             float newDestination = Random.Range(0, 100);
-            //Debug.Log("Roaming" + newDestination);
 
             if (newDestination >= 99)
             {

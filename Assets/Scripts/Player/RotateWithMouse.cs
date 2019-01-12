@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RotateWithMouse : MonoBehaviour {
+    [SerializeField]
     public bool AllowRotation { get; set; }
     public bool RaiseCam { get; set; }
 
@@ -26,6 +27,9 @@ public class RotateWithMouse : MonoBehaviour {
 
         _playerBH = this.gameObject.GetComponent<PlayerBehaviour>();
         _originalCameraPosition = this.gameObject.transform.Find("KnockedOutCheck").transform;
+
+        AllowRotation = true;
+        RaiseCam = false;
     }
 	
 	// Update is called once per frame
@@ -34,6 +38,8 @@ public class RotateWithMouse : MonoBehaviour {
 
         if (AllowRotation)
             RotateCamera();
+
+        RaiseCamera();
     }
 
     private void RotateCamera()
@@ -82,7 +88,6 @@ public class RotateWithMouse : MonoBehaviour {
 
     private void StandingUpCamera()
     {
-        Debug.Log("lerping");
         _lerpValue += Time.deltaTime / 2;
         Vector3 currAngle = new Vector3(
             Mathf.LerpAngle(_camPivot.transform.localRotation.x, 35,_lerpValue),

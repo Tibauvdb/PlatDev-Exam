@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SittingStateMachine : BaseStateMachineBehaviour {
+    [SerializeField]
     private PlayerBehaviour _bps;
 
     private PlayerBehaviour _backUpBPS;
@@ -10,10 +11,10 @@ public class SittingStateMachine : BaseStateMachineBehaviour {
     private void Awake()
     {
         _bps = SetPlayerBehaviour(_bps);
+        _backUpBPS = GameObject.Find("Player").GetComponent<PlayerBehaviour>();
     }
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        _backUpBPS = GameObject.Find("Player").GetComponent<PlayerBehaviour>();
         //_bps.State = PlayerBehaviour.States.Sitting;
         _backUpBPS.State = PlayerBehaviour.States.Sitting;
 
@@ -21,7 +22,6 @@ public class SittingStateMachine : BaseStateMachineBehaviour {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        _backUpBPS = GameObject.Find("Player").GetComponent<PlayerBehaviour>();
         //_bps.State = PlayerBehaviour.States.Walking;
         _backUpBPS.State = PlayerBehaviour.States.Walking;
     }

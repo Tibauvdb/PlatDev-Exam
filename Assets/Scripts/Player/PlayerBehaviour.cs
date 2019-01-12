@@ -31,7 +31,6 @@ public class PlayerBehaviour : MonoBehaviour {
 
     //Create state
     public States State { get; set; }
-    
 
     [SerializeField] private float _acceleration; //[m/s2]
     [SerializeField] private float _drag;
@@ -88,7 +87,6 @@ public class PlayerBehaviour : MonoBehaviour {
         //Get input from Any Horizontal or Vertical Axis
         //Normalize
         InputMovementBase = new Vector3(Input.GetAxis(_input.HorizontalAxis), 0,Input.GetAxis(_input.VerticalAxis)).normalized;  //Used for base movement
-
         #region Switch Case States
         switch (State){
             case States.Walking:
@@ -106,6 +104,7 @@ public class PlayerBehaviour : MonoBehaviour {
             case States.Stairs:
                 break;
             case States.Sitting:
+                SittingState();
                 break;
             case States.KnockedOut:
                 KnockedOutState();
@@ -119,33 +118,27 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         ApplyGround();
 
-        if(State!=States.Sitting)
+        if(_allowGravity)
             ApplyGravity();
 
-        if(State == States.Walking || State == States.WalkingWithPickup || State == States.PushingBox)
-        {
+        if(_allowMovementBaseCalculation)
             ApplyMovementBase();
-        }
+        
         ApplyDragOnGround();
-
         LimitXZVelocity();
-
 
         Vector3 XZvel = Vector3.Scale(Velocity, new Vector3(1, 0, 1));
         Vector3 localVelXZ = gameObject.transform.InverseTransformDirection(XZvel);
-        
+
+        if(_allowDoMovement)
+            DoMovement();
+
         #region SetAnimatorProperties
         _anim.SetFloat("VerticalVelocity", (localVelXZ.z * (_drag)) / _maximumXZVelocity);
         _anim.SetFloat("HorizontalVelocity", (localVelXZ.x * (_drag)) / _maximumXZVelocity);
 
         _anim.SetBool("PickUpObject", PickingUp);
         #endregion
-
-
-        if(State != States.Sitting)
-            DoMovement();
-
-
     }
 
     //Get relative direction from camera
@@ -220,7 +213,7 @@ public class PlayerBehaviour : MonoBehaviour {
         _char.Move(movement);
         }
 
-    //Pick up Object - Gets called from pickup-able objects - Not used atm  
+    //Pick up Object - Gets called from pickup-able objects
     public void PickUpObject(GameObject pickup)
     {
         //Enter this script when player wants to pick up object in front of them
@@ -256,8 +249,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     #region State Functions
     private void WalkingState()
-    {
-        //Coming out of PickUp v
+    {   
         if (_anim.GetLayerWeight(1) == 1)
         {
             _anim.SetLayerWeight(1, 0);
@@ -268,6 +260,9 @@ public class PlayerBehaviour : MonoBehaviour {
             _cameraRotation.AllowRotation = true;
         if (_cameraRotation.RaiseCam)
             _cameraRotation.RaiseCam = false;
+
+        SetMovementBools(true, true, true); 
+        
     }
     private void PickingUpState()
     {
@@ -282,12 +277,14 @@ public class PlayerBehaviour : MonoBehaviour {
         {
             _pickupStateMachine.PickUp = null;
         }
+
+        SetMovementBools(true, false, false);
     }
     private void PushingBoxState()
     {
-
         RaiseCameraAndStopRotation();
-
+        SetMovementBools(true, true, true);
+        
         InputMovementBase = new Vector3(0, 0, Input.GetAxis(_input.VerticalAxis)).normalized;
 
     }
@@ -295,14 +292,26 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         _cameraRotation.AllowRotation = true;
         _cameraRotation.RaiseCam = true;
+
+        SetMovementBools(true, true, true);
+    }
+    private void SittingState()
+    {
+        SetMovementBools(false, false, false);
     }
     private void KnockedOutState()
     {
         _cameraRotation.AllowRotation = false;
+        SetMovementBools(true, false, false);
     }
     #endregion
 
-
+    private void SetMovementBools(bool gravity,bool baseMovement,bool movement)
+    {
+        _allowGravity = gravity;
+        _allowMovementBaseCalculation = baseMovement;
+        _allowDoMovement = movement;
+    }
 
     //Found On Internet - Not Mine
     //Function to clamp angles | Used to clamp rotation of camera

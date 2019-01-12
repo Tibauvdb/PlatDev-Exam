@@ -31,22 +31,10 @@ public class AllowSitting : MonoBehaviour {
     {
         if (_allowInteraction == true)
         {
-             switch (_currSitState)
-            {
-                case SittingStates.Standing:
-                    _currSitState = SittingStates.StandToSit;
-                    break;
-                case SittingStates.StandToSit:
-                    StartSit();
-                    break;
-                case SittingStates.Sitting:
-                    break;
-                case SittingStates.SitToStand:
-                    StartStandingUp();
-                    break;
-            }
+            SwitchCaseStates();
         }
     }
+
     private void OnTriggerStay(Collider other)
     {
         if(other.tag == "Player")
@@ -59,6 +47,22 @@ public class AllowSitting : MonoBehaviour {
                 _allowInteraction = true;
 
             }
+        }
+    }
+
+    private void SwitchCaseStates()
+    {
+        switch (_currSitState)
+        {
+            case SittingStates.Standing:
+                _currSitState = SittingStates.StandToSit;
+                break;
+            case SittingStates.StandToSit:
+                StartSit();
+                break;
+            case SittingStates.SitToStand:
+                StartStandingUp();
+                break;
         }
     }
 

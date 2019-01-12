@@ -10,7 +10,7 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
     private PlayerBehaviour _bps;
 
     private float _lerpCount = 0.0f;
-    private float _AnimatorCutTime = 0.34f;
+    private float _animatorCutTime = 0.34f;
     private void Awake()
     {
         _bps =  SetPlayerBehaviour(_bps);
@@ -37,7 +37,7 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
         if (LookAtObj != null)
         {
             //Set Look At
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= _AnimatorCutTime)
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= _animatorCutTime)
             {
                 animator.SetLookAtWeight(1);
                 animator.SetLookAtPosition(LookAtObj.position);  
@@ -47,7 +47,7 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
         if (PickUp != null)
         {
             //Set Pick Up
-            if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= _AnimatorCutTime)
+            if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= _animatorCutTime)
             {
                 SetPickUpIK(animator);
             }

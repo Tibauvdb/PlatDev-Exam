@@ -28,7 +28,7 @@ public class AllowPickup : MonoBehaviour {
             PlayerBehaviour.States state = other.gameObject.GetComponent<PlayerBehaviour>().State;
 
             //Allow player to pick up object
-            if (Input.GetButtonDown(_input.A) && other.gameObject.GetComponent<PlayerBehaviour>().State != PlayerBehaviour.States.WalkingWithPickup)
+            if (Input.GetButtonDown(_input.A) && state != PlayerBehaviour.States.WalkingWithPickup)
             {
                 other.gameObject.GetComponent<PlayerBehaviour>().PickUpObject(this.gameObject);
                 this.gameObject.GetComponent<Rigidbody>().isKinematic = true;

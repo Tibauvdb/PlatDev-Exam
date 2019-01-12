@@ -27,13 +27,10 @@ public class FollowPlayer : MonoBehaviour {
 
         if (Vector3.Distance(this.gameObject.transform.position,_player.position) <= _visionDistance)
         {
-
             //If Player is in VisionDistance -> Check if nothing is blocking LOS
             RaycastHit hit;
-            Debug.DrawLine(this.gameObject.transform.position, _player.position, Color.red);
             if(Physics.Linecast(this.gameObject.transform.position,_player.position,out hit,_layerMask) || _currState == PlayerBehaviour.States.Sitting || _currState == PlayerBehaviour.States.KnockedOut)
             {
-                Debug.Log("entering Raycast " + this.gameObject.name);
                 //If the lineCast returns true, something is in between the player & AI
                 if (this.gameObject.name.Contains("Type01"))
                     if(_aiBehaviour.IsAIFollowing)
@@ -42,8 +39,7 @@ public class FollowPlayer : MonoBehaviour {
                 if (this.gameObject.name.Contains("Type02"))
                 {
                     //Doesn't happen
-                    _aiBehaviour.IsAILooking = false;
-                    Debug.Log("it be");
+                    _aiBehaviour.IsAILooking = false;;
                 }
                 //Reset Agent
                 
