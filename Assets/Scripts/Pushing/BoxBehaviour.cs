@@ -22,14 +22,13 @@ public class BoxBehaviour : MonoBehaviour {
         if(other.gameObject.tag == "Player")
         {
             PlayerBehaviour.States state = other.gameObject.GetComponent<PlayerBehaviour>().State;
-            if (Input.GetButtonDown(_input.A) && state == PlayerBehaviour.States.Walking)
-            {
-                PushingBox(other);
-            }
 
-            if (Input.GetButtonDown(_input.A) && state == PlayerBehaviour.States.PushingBox)
+            if (Input.GetButtonDown(_input.A))
             {
-                StopPushingBox();
+                if (state == PlayerBehaviour.States.PushingBox)
+                    StopPushingBox();
+                else if (state == PlayerBehaviour.States.Walking)
+                    PushingBox(other);
             }
         }
 
