@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class BaseStateMachineBehaviour : StateMachineBehaviour {
 
-    public void SetPlayerBehaviour(PlayerBehaviour _pbs)
+    public PlayerBehaviour SetPlayerBehaviour(PlayerBehaviour PlayerBehaviourScript)
     {
         Debug.Log("Happening");
-        _pbs = GameObject.Find("Player").GetComponent<PlayerBehaviour>();
+        PlayerBehaviourScript = GameObject.Find("Player").GetComponent<PlayerBehaviour>();
+        return PlayerBehaviourScript;
     }
 
 }

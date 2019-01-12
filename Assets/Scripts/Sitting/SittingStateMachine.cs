@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SittingStateMachine : BaseStateMachineBehaviour {
-    public PlayerBehaviour _bps { get; set; }
+    private PlayerBehaviour _bps;
 
     private PlayerBehaviour _backUpBPS;
 
     private void Awake()
     {
-        SetPlayerBehaviour(_bps);
+        _bps = SetPlayerBehaviour(_bps);
     }
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

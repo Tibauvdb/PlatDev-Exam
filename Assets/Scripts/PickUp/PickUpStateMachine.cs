@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PickUpStateMachine : BaseStateMachineBehaviour
 {
-    
-    public PlayerBehaviour _bps { get; set; }
+
+    private PlayerBehaviour _bps;
     public Transform PickUp { get; set; }
     public Transform LookAtObj { get; set; }
 
@@ -13,7 +13,7 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
 
     private void Awake()
     {
-        SetPlayerBehaviour(_bps);
+        _bps =  SetPlayerBehaviour(_bps);
     }
     
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

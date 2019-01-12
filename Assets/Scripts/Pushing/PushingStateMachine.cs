@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PushingStateMachine : BaseStateMachineBehaviour {
-    public PlayerBehaviour _bps { get; set; }
+    private PlayerBehaviour _bps;
 
     private void Awake()
     {
-        SetPlayerBehaviour(_bps);
+        _bps = SetPlayerBehaviour(_bps);
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

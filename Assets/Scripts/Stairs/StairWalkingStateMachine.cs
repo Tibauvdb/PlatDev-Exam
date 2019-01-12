@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StairWalkingStateMachine : StateMachineBehaviour {
+public class StairWalkingStateMachine : BaseStateMachineBehaviour {
     public PlayerBehaviour _bps;
     
     private Transform _leftFoot;
@@ -15,6 +15,10 @@ public class StairWalkingStateMachine : StateMachineBehaviour {
     private float _leftFootWeight;
     private float _rightFootWeight;
 
+    private void Awake()
+    {
+        _bps = SetPlayerBehaviour(_bps);
+    }
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         _leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
