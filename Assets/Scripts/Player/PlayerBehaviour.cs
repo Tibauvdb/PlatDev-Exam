@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+
 //[RequireComponent(typeof(CharacterController))]
 public class PlayerBehaviour : MonoBehaviour {
 
@@ -251,21 +252,12 @@ public class PlayerBehaviour : MonoBehaviour {
     private void SetStateMachines()
     {
         _pickupStateMachine = _anim.GetBehaviour<PickUpStateMachine>();
-        _pickupStateMachine._bps = this;
         _throwingStateMachine = _anim.GetBehaviour<ThrowingEndStateMachine>();
-        _throwingStateMachine._bps = this;
         _pushingStateMachine = _anim.GetBehaviour<PushingStateMachine>();
-        _pushingStateMachine._bps = this;
         _stairWalkingStateMachine = _anim.GetBehaviour<StairWalkingStateMachine>();
-        _stairWalkingStateMachine._bps = this;
         _sittingStateMachine = _anim.GetBehaviour<SittingStateMachine>();
-        _sittingStateMachine._bps = this;
     }
 
-    private void SetUpStateMachineConnection()
-    {
-
-    }
     #region State Functions
     private void WalkingState()
     {

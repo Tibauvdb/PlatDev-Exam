@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickUpStateMachine : StateMachineBehaviour
+public class PickUpStateMachine : BaseStateMachineBehaviour
 {
+    
     public PlayerBehaviour _bps { get; set; }
     public Transform PickUp { get; set; }
     public Transform LookAtObj { get; set; }
 
     private float _lerpCount = 0.0f;
 
-
-
+    private void Awake()
+    {
+        SetPlayerBehaviour(_bps);
+    }
+    
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-
+    {                   
         _bps.PickingUp = false;
         animator.SetBool("PickUpObject", _bps.PickingUp);
         Reset();
