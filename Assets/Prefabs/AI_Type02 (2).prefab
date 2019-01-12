@@ -954,12 +954,9 @@ GameObject:
   - component: {fileID: 143504418671140190}
   - component: {fileID: 114960754122569310}
   - component: {fileID: 114084269812994348}
-  - component: {fileID: 114515021188884646}
-  - component: {fileID: 114085051849853446}
-  - component: {fileID: 114983576345684178}
   - component: {fileID: 195579185837245014}
   m_Layer: 0
-  m_Name: AI_Type02 (2)
+  m_Name: AI_Type02
   m_TagString: AI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2142,28 +2139,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
---- !u!114 &114085051849853446
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1903704066651338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d388df56889dbef47bdf642ab93ef739, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114515021188884646
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1903704066651338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab8acb5cfe6ff1e49b046ad47f67c3cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114960754122569310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2179,17 +2154,6 @@ MonoBehaviour:
   IsAIFollowing: 0
   IsAILooking: 0
   PlayerPosition: {x: 0, y: 0, z: 0}
---- !u!114 &114983576345684178
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1903704066651338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab8acb5cfe6ff1e49b046ad47f67c3cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!137 &137846959085236500
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

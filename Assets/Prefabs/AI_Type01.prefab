@@ -774,9 +774,8 @@ GameObject:
   - component: {fileID: 4649624365595242}
   - component: {fileID: 143660651588766370}
   - component: {fileID: 114922172685690404}
-  - component: {fileID: 195125984750891620}
-  - component: {fileID: 114840213432133510}
   - component: {fileID: 114470190461471408}
+  - component: {fileID: 195125984750891620}
   m_Layer: 0
   m_Name: AI_Type01
   m_TagString: AI
@@ -2140,17 +2139,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
---- !u!114 &114840213432133510
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1611580124603952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab8acb5cfe6ff1e49b046ad47f67c3cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114922172685690404
 MonoBehaviour:
   m_ObjectHideFlags: 1
