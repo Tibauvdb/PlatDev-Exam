@@ -9,7 +9,6 @@ public class PlayerBehaviour : MonoBehaviour {
 
     //Create GetterSetter for Public Variables
     private InputManager _input;
-    public IKGrabBehaviour IKGrab { get; set; }
 
     private PickUpStateMachine _pickupStateMachine;
     private ThrowingEndStateMachine _throwingStateMachine;
@@ -59,12 +58,12 @@ public class PlayerBehaviour : MonoBehaviour {
         {
         //Set Components;
         #region Components
+        _input = GameObject.Find("GameManager").GetComponent<InputManager>();
+
         _char = this.gameObject.GetComponent<CharacterController>();
+        _cameraRotation = this.gameObject.GetComponent<RotateWithMouse>();
         _absoluteTransform = Camera.main.transform;
         _anim = transform.GetChild(0).GetComponent<Animator>();
-        _input = GameObject.Find("GameManager").GetComponent<InputManager>();
-        IKGrab = this.gameObject.transform.GetChild(0).GetComponent<IKGrabBehaviour>();
-        _cameraRotation = this.gameObject.GetComponent<RotateWithMouse>();
         #endregion
         //Set stateMachineBehaviour
         #region StateMachine Behaviours
@@ -85,9 +84,9 @@ public class PlayerBehaviour : MonoBehaviour {
 
         #region Dependencies
         //dependency error if charactercontroller is not attached
-#if DEBUG
+        #if DEBUG
         Assert.IsNotNull(_char, "DEPENDENCY ERROR: CharacterController is missing from PlayerBehaviour");
-#endif
+        #endif
         #endregion
 
     }
@@ -121,12 +120,12 @@ public class PlayerBehaviour : MonoBehaviour {
 
                 if (_currentPickup != null && PickingUp == true)
                 {
-                    IKGrab.PickUp = _currentPickup.transform;
-                    IKGrab.LookAtObj = _currentPickup.transform;
+                    _pickupStateMachine.PickUp = _currentPickup.transform;
+                    _pickupStateMachine.LookAtObj = _currentPickup.transform;
                 }
                 else if (_currentPickup != null && PickingUp == false)
                 {
-                    IKGrab.PickUp = null;
+                    _pickupStateMachine.PickUp = null;
                 }
 
                 break;
@@ -293,6 +292,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         _cameraRotation.RaiseCam = true;
     }
+
     //Found On Internet - Not Mine
     //Function to clamp angles | Used to clamp rotation of camera
     public static float ClampAngle(float angle, float min, float max)

@@ -47,7 +47,7 @@ public class RotateWithMouse : MonoBehaviour {
             transform.localEulerAngles = tempRot;
             if (_isSitting && _currState == PlayerBehaviour.States.Walking)
             {
-                Debug.Log("LerpValue: " + _lerpValue);
+                //Debug.Log("LerpValue: " + _lerpValue);
                     _lerpValue += Time.deltaTime/2;
                 _camPivot.transform.forward = Vector3.Lerp(_camPivot.transform.forward, _playerBH.transform.forward, _lerpValue);
 
