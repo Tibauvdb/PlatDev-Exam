@@ -39,22 +39,7 @@ public class BoxBehaviour : Avatar {
     {
         if(other.gameObject.tag == "Player")
         {
-            PlayerBehaviour.States state = other.gameObject.GetComponent<PlayerBehaviour>().State;
-
-            if (Input.GetButtonDown(_input.A))
-            {
-                if (state == PlayerBehaviour.States.Walking)
-                {
-                    WalkingToPushBox(other.gameObject);
-                }
-                else if (state == PlayerBehaviour.States.PushingBox)
-                {
-                    PushBoxToWalking(other.gameObject);
-                }
-            }
-
-            if (_stopPush)
-                other.gameObject.GetComponent<PlayerBehaviour>().AllowDoMovement = false;
+            CheckPlayerState(other.gameObject);
         }
 
         if (other.gameObject.tag == "AI" && _isPushing)
@@ -87,6 +72,26 @@ public class BoxBehaviour : Avatar {
             if(_isPushing)
                 tempRB.AddForce(_player.transform.forward * _pushForce, ForceMode.Force);
         }
+    }
+
+    private void CheckPlayerState(GameObject player)
+    {
+        PlayerBehaviour.States state = player.GetComponent<PlayerBehaviour>().State;
+
+        if (Input.GetButtonDown(_input.A))
+        {
+            if (state == PlayerBehaviour.States.Walking)
+            {
+                WalkingToPushBox(player);
+            }
+            else if (state == PlayerBehaviour.States.PushingBox)
+            {
+                PushBoxToWalking(player);
+            }
+        }
+
+        if (_stopPush)
+            player.GetComponent<PlayerBehaviour>().AllowDoMovement = false;
     }
 
     private void PushBox()

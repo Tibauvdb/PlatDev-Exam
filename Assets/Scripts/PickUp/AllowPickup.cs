@@ -25,33 +25,37 @@ public class AllowPickup : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerBehaviour.States state = other.gameObject.GetComponent<PlayerBehaviour>().State;
-
-            //Allow player to pick up object
-            if (Input.GetButtonDown(_input.A) && state != PlayerBehaviour.States.WalkingWithPickup)
-            {
-                other.gameObject.GetComponent<PlayerBehaviour>().PickUpObject(this.gameObject);
-                this.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-                Thrown = false;
-            }
-
-            //Preparing throw, as soon as trigger gets released, object will be thrown
-            if (state == PlayerBehaviour.States.WalkingWithPickup && Input.GetAxis(_input.Triggers)!=0)
-            {
-                StartThrow();
-            }
-
-            //Throw object
-            if(_isThrowing==true && Input.GetAxis(_input.Triggers) == 0)
-            {
-                Throw();
-            }
+            CheckPlayerState(other.gameObject);
         }
 
         else if(other.gameObject.tag == "AI" && Thrown == true)
         {
             other.GetComponent<BaseAIBehaviour>().IsAIKnockedOut = true;
             Thrown = false;
+        }
+    }
+    private void CheckPlayerState(GameObject player)
+    {
+        PlayerBehaviour.States state = player.GetComponent<PlayerBehaviour>().State;
+
+        //Allow player to pick up object
+        if (Input.GetButtonDown(_input.A) && state != PlayerBehaviour.States.WalkingWithPickup)
+        {
+            player.GetComponent<PlayerBehaviour>().PickUpObject(this.gameObject);
+            this.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            Thrown = false;
+        }
+
+        //Preparing throw, as soon as trigger gets released, object will be thrown
+        if (state == PlayerBehaviour.States.WalkingWithPickup && Input.GetAxis(_input.Triggers) != 0)
+        {
+            StartThrow();
+        }
+
+        //Throw object
+        if (_isThrowing == true && Input.GetAxis(_input.Triggers) == 0)
+        {
+            Throw();
         }
     }
 

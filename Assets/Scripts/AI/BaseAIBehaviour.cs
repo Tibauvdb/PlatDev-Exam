@@ -29,13 +29,7 @@ public class BaseAIBehaviour : MonoBehaviour {
         //Check if the AI is following or looking type
         CheckAIType();
 
-        #region Set Components
-        _agent = this.gameObject.GetComponent<NavMeshAgent>();
-        _anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
-        _aiStateMachine = _anim.GetBehaviour<AIStateMachine>();
-        _aiStateMachine.AIBehaviour = this;
-        _aiFOV = this.gameObject.GetComponent<AiFieldOfView>();
-        #endregion
+        SetComponents();
 
         _rootNode =
             new SelectorNode(
@@ -166,5 +160,14 @@ public class BaseAIBehaviour : MonoBehaviour {
             AISpecificAction = LookAtPlayer;
 
         }
+    }
+
+    private void SetComponents()
+    {
+        _agent = this.gameObject.GetComponent<NavMeshAgent>();
+        _anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
+        _aiStateMachine = _anim.GetBehaviour<AIStateMachine>();
+        _aiStateMachine.AIBehaviour = this;
+        _aiFOV = this.gameObject.GetComponent<AiFieldOfView>();
     }
 }
