@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 
 //[RequireComponent(typeof(CharacterController))]
-public class PlayerBehaviour : MonoBehaviour {
+public class PlayerBehaviour : Avatar {
 
     private InputManager _input;
 
@@ -54,7 +54,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private bool _allowGravity = true;
     private bool _allowMovementBaseCalculation = true;
-    private bool _allowDoMovement = true;
+    public bool AllowDoMovement = true;
 
     void Start ()
         {
@@ -125,12 +125,12 @@ public class PlayerBehaviour : MonoBehaviour {
             ApplyMovementBase();
         
         ApplyDragOnGround();
-        LimitXZVelocity();
-
+        //LimitXZVelocity();
+        Velocity = LimitXZVel(Velocity,_maximumXZVelocity);
         Vector3 XZvel = Vector3.Scale(Velocity, new Vector3(1, 0, 1));
         Vector3 localVelXZ = gameObject.transform.InverseTransformDirection(XZvel);
 
-        if(_allowDoMovement)
+        if(AllowDoMovement)
             DoMovement();
 
         #region SetAnimatorProperties
@@ -310,7 +310,7 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         _allowGravity = gravity;
         _allowMovementBaseCalculation = baseMovement;
-        _allowDoMovement = movement;
+        AllowDoMovement = movement;
     }
 
     //Found On Internet - Not Mine
