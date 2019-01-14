@@ -61,13 +61,13 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
     }
     private void SetPickUpIK(Animator animator )
     {
-        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, Mathf.Lerp(_lerpCount, 1, Time.deltaTime));
-        animator.SetIKRotationWeight(AvatarIKGoal.RightHand, Mathf.Lerp(_lerpCount, 1, Time.deltaTime));
+        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, Mathf.Lerp(0, 1, _lerpCount));
+        animator.SetIKRotationWeight(AvatarIKGoal.RightHand, Mathf.Lerp(0, 1, _lerpCount));
         animator.SetIKPosition(AvatarIKGoal.RightHand, PickUp.position);
         animator.SetIKRotation(AvatarIKGoal.RightHand, PickUp.rotation);
 
         if (_lerpCount < 1.0f)
-            _lerpCount += 0.005f;
+            _lerpCount += Time.deltaTime/2;
     }
 
     public void Reset()
@@ -75,4 +75,14 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
         PickUp = null;
         LookAtObj = null;
     }
+
+   /* public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
+    {
+        GameObject currentPick;
+
+        currentPick = _bps.CurrentPickUp;
+
+        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+        animator.SetIKPosition(AvatarIKGoal.RightHand, currentPick.transform.position);
+    }*/
 }

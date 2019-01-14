@@ -35,7 +35,6 @@ public class PlayerBehaviour : Avatar {
     [SerializeField] private float _acceleration; //[m/s2]
     [SerializeField] private float _drag;
     [SerializeField] private float _maximumXZVelocity; //[m/s] 8.3m/s
-    [SerializeField] private float _jumpHeight; //[m]
 
     private Transform _absoluteTransform; //Camera Transform
     private CharacterController _char;
@@ -54,7 +53,7 @@ public class PlayerBehaviour : Avatar {
 
     private bool _allowGravity = true;
     private bool _allowMovementBaseCalculation = true;
-    public bool AllowDoMovement = true;
+    public bool AllowDoMovement { get; set; }
 
     void Start ()
         {
@@ -66,6 +65,7 @@ public class PlayerBehaviour : Avatar {
         _cameraRotation = this.gameObject.GetComponent<RotateWithMouse>();
         _absoluteTransform = Camera.main.transform;
         _anim = transform.GetChild(0).GetComponent<Animator>();
+        AllowDoMovement = true;
         #endregion
 
         SetStateMachines();
