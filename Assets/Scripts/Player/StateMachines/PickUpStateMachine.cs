@@ -76,11 +76,14 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
         LookAtObj = null;
     }
 
-   /* public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
+   /* public override void OnStateIK(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
         GameObject currentPick;
 
         currentPick = _bps.CurrentPickUp;
+
+        SetPickUpIK(animator);
+
 
         animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
         animator.SetIKPosition(AvatarIKGoal.RightHand, currentPick.transform.position);
