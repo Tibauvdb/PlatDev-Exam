@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AiFieldOfView : MonoBehaviour {
     private BaseAIBehaviour _aiBehaviour;
+    [SerializeField]
     private GameObject _player;
 
     private int _visionDistance = 5; //5m radius aroundAI
