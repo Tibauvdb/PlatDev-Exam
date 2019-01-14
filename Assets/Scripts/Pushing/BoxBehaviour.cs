@@ -18,7 +18,12 @@ public class BoxBehaviour : Avatar {
     private bool _stopPush = false;
 
     private Transform _player;
+    private Vector3 _targetTrans;
+    private float _lerpCounter;
 
+    private bool _lerpForward;
+
+    private Animation _pushBoxLegs;
     // Use this for initialization
     void Start () {
         _input = GameObject.Find("GameManager").GetComponent<InputManager>();
@@ -28,13 +33,17 @@ public class BoxBehaviour : Avatar {
 
     private void Update()
     {
-        if (_isPushing && !_stopPush)
-            PushBox();
-
         _rb.velocity = LimitXZVel(_rb.velocity, _maxXZVel);
 
+        if (_lerpForward)
+            LerpForward(_player,_targetTrans);
     }
 
+    private void FixedUpdate()
+    {
+        if (_isPushing && !_stopPush)
+            PushBox();
+    }
     private void OnTriggerStay(Collider other)
     {
         if(other.gameObject.tag == "Player")
@@ -56,7 +65,9 @@ public class BoxBehaviour : Avatar {
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
-            _isPushing = false;
+        {
+            PushBoxToWalking(other.gameObject);
+        }
     }
 
     private void OnCollisionStay(Collision collision)
@@ -96,13 +107,18 @@ public class BoxBehaviour : Avatar {
 
     private void PushBox()
     {
-
-
         _forwardVelocity = GetPlayerVelocity();
 
         //Use player's forward, the Force the box will be pushed with and player's Velocity according to forward to push the box
         this.GetComponent<Rigidbody>().AddForce(_player.transform.forward * _pushForce  * (_forwardVelocity/2), ForceMode.Force);
-   
+
+        //Set feet movement on second layer
+        if (_forwardVelocity <= 0.1f)
+            _anim.SetFloat("SpeedMirror", 0);
+        else
+            _anim.SetFloat("SpeedMirror", 1);
+
+
     }
 
     private void WalkingToPushBox(GameObject player)
@@ -114,6 +130,7 @@ public class BoxBehaviour : Avatar {
         _isPushing = true;
 
         player.GetComponent<PlayerBehaviour>().State = PlayerBehaviour.States.PushingBox;
+        ChangePlayerForward(_player);
     }
 
     private void PushBoxToWalking(GameObject player)
@@ -138,5 +155,27 @@ public class BoxBehaviour : Avatar {
 
         forwardVel = Mathf.Abs(forwardVel);
         return forwardVel;
+    }
+
+    private void ChangePlayerForward(Transform playerTrans)
+    {
+        RaycastHit hit;
+        if(Physics.Linecast(playerTrans.position, this.gameObject.transform.position,out hit))
+        {
+            _targetTrans =  -hit.normal;
+            _lerpForward = true;
+        }
+    }
+
+    private void LerpForward(Transform current,Vector3 target)
+    {
+        _lerpCounter += Time.deltaTime;
+       current.forward = Vector3.Lerp(current.forward, target, _lerpCounter);
+
+        if (_lerpCounter>1)
+        {
+            _lerpForward = false;
+            _lerpCounter = 0;
+        }
     }
 }

@@ -112,6 +112,7 @@ public class PlayerBehaviour : Avatar {
 
         }
         #endregion
+        Debug.Log(State);
     }
 
     void FixedUpdate ()
