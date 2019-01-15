@@ -17,13 +17,16 @@ public class BoxBehaviour : Avatar {
     [SerializeField]
     private bool _stopPush = false;
 
+    private bool _allowPush = true;
+
     private Transform _player;
     private Vector3 _targetTrans;
     private float _lerpCounter;
 
     private bool _lerpForward;
 
-    private Animation _pushBoxLegs;
+    private Animation _legAnimation;
+
     // Use this for initialization
     void Start () {
         _input = GameObject.Find("GameManager").GetComponent<InputManager>();
@@ -44,9 +47,10 @@ public class BoxBehaviour : Avatar {
         if (_isPushing && !_stopPush)
             PushBox();
     }
+
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Player" && _allowPush)
         {
             CheckPlayerState(other.gameObject);
         }
@@ -60,13 +64,23 @@ public class BoxBehaviour : Avatar {
                 other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut = true;
             }
         }
+
+        if(other.gameObject.tag == "PickUp")
+        {
+            _allowPush = false;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerBehaviour>().State == PlayerBehaviour.States.PushingBox)
         {
             PushBoxToWalking(other.gameObject);
+        }
+
+        if(other.gameObject.tag == "PickUp")
+        {
+            _allowPush = true;
         }
     }
 

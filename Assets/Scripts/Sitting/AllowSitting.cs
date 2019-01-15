@@ -39,7 +39,7 @@ public class AllowSitting : MonoBehaviour {
     {
         if(other.tag == "Player")
         {
-            if (Input.GetButtonDown(_input.A))
+            if (Input.GetButtonDown(_input.A) && other.gameObject.GetComponent<PlayerBehaviour>().State == PlayerBehaviour.States.Walking)
             {
                 if (_allowInteraction && _currSitState == SittingStates.Sitting)
                     _currSitState = SittingStates.SitToStand;

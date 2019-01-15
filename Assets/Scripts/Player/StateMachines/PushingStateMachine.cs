@@ -5,13 +5,11 @@ using UnityEngine;
 public class PushingStateMachine : BaseStateMachineBehaviour {
     private PlayerBehaviour _bps;
 
-    public Transform _leftShoulder;
-    public Transform _rightShoulder;
+    private Transform _leftShoulder;
+    private Transform _rightShoulder;
     private void Awake()
     {
-        _bps = SetPlayerBehaviour(_bps);
-
-        
+        _bps = SetPlayerBehaviour(_bps);    
     }
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)

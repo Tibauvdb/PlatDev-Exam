@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISetStateMachineBehaviour<T>
+public interface ISetBehaviour<T,Y,A>
 {
-    void SetStateBehaviour(T state);
-}
-
-public interface ISetPlayerBehaviour<T>
-{
-    void SetPlayerBehaviour(T pbs);
+    T SetPlayerBehaviour(T pbs);
+    Y SetAIBehaviour(Y ais,A animator);
 }
 
 public interface LimitVelocity<T,Y>

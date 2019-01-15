@@ -94,7 +94,7 @@ public class ObjectThrow : MonoBehaviour {
     }
 
 
-    //Calculate distance | this will change when _v0 (Throwing power) get increased
+    //Calculate distance | this will change when ThrowAngle get increased
     private void CalculateDistance()
     {
         _dis = (Mathf.Pow(_v0, 2) * Mathf.Sin(2 * (ThrowAngle * Mathf.PI / 180))) / _g; //x = (v0^2 * sin(2*alpha)) / g
@@ -151,4 +151,5 @@ public class ObjectThrow : MonoBehaviour {
         _colliding = false;
         ThrowAngle = _startAngle;
     }
+
 }

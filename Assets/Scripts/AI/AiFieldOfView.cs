@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AiFieldOfView : MonoBehaviour {
     private BaseAIBehaviour _aiBehaviour;
-    [SerializeField]
+
     private GameObject _player;
 
     private int _visionDistance = 5; //5m radius aroundAI
@@ -14,8 +14,7 @@ public class AiFieldOfView : MonoBehaviour {
 
     private void Start()
     {
-        _player = GameObject.FindGameObjectWithTag("Player");
-        _aiBehaviour = this.gameObject.GetComponent<BaseAIBehaviour>();
+        SetFields();
         _layerMask = ~_layerMask;
     }
 
@@ -23,6 +22,7 @@ public class AiFieldOfView : MonoBehaviour {
     public bool CheckFieldOfView(bool allowReset)
     {
         //Check if player is in FOV
+        SetFields();
         if (Vector3.Distance(this.gameObject.transform.position, _player.transform.position) <= _visionDistance)
         {
             _currentState = _player.GetComponent<PlayerBehaviour>().State;
@@ -44,5 +44,11 @@ public class AiFieldOfView : MonoBehaviour {
         }
         else
             return false;
+    }
+
+    private void SetFields()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _aiBehaviour = this.gameObject.GetComponent<BaseAIBehaviour>();
     }
 }

@@ -9,7 +9,8 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
 
     private PlayerBehaviour _bps;
 
-    private float _lerpCount = 0.0f;
+    private float _lerpCountStart = 0.0f;
+    private float _lerpCountEnd = 0.0f;
     private float _animatorCutTime = 0.34f;
     private void Awake()
     {
@@ -49,25 +50,22 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
             //Set Pick Up
             if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= _animatorCutTime)
             {
-                SetPickUpIK(animator);
+                SetPickUpIK(animator,0,1,_lerpCountStart);
             }
             else
             {
-                PickUp.parent = animator.GetBoneTransform(HumanBodyBones.RightHand);
-                PickUp.position = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+               PickUp.parent = animator.GetBoneTransform(HumanBodyBones.RightHand);
+               PickUp.position = animator.GetBoneTransform(HumanBodyBones.RightHand).position;               
+               SetPickUpIK(animator, 1, 0,_lerpCountEnd);
             } 
 
         }
     }
-    private void SetPickUpIK(Animator animator )
+    private void SetPickUpIK(Animator animator,float LerpStart,float LerpEnd,float _lerpCount )
     {
-        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, Mathf.Lerp(0, 1, _lerpCount));
-        animator.SetIKRotationWeight(AvatarIKGoal.RightHand, Mathf.Lerp(0, 1, _lerpCount));
-        animator.SetIKPosition(AvatarIKGoal.RightHand, PickUp.position);
-        animator.SetIKRotation(AvatarIKGoal.RightHand, PickUp.rotation);
-
-        if (_lerpCount < 1.0f)
-            _lerpCount += Time.deltaTime/2;
+        _lerpCountStart += Time.deltaTime;
+        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, Mathf.Lerp(LerpStart, LerpEnd, _lerpCount));
+        animator.SetIKPosition(AvatarIKGoal.RightHand, PickUp.position);      
     }
 
     public void Reset()
@@ -75,17 +73,4 @@ public class PickUpStateMachine : BaseStateMachineBehaviour
         PickUp = null;
         LookAtObj = null;
     }
-
-   /* public override void OnStateIK(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
-    {
-        GameObject currentPick;
-
-        currentPick = _bps.CurrentPickUp;
-
-        SetPickUpIK(animator);
-
-
-        animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-        animator.SetIKPosition(AvatarIKGoal.RightHand, currentPick.transform.position);
-    }*/
 }

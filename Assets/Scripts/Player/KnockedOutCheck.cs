@@ -15,6 +15,7 @@ public class KnockedOutCheck : MonoBehaviour {
         if(other.name.Contains("Type01") && other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut == false && _playerBh.State != PlayerBehaviour.States.Sitting)
         {
             _playerBh.KnockedOut();
+            other.gameObject.transform.Find("AI-Model").GetComponent<Animator>().SetTrigger("IsPunching");
         }
     }
 }

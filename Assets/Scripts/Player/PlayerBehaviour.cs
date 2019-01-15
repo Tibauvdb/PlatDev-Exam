@@ -7,8 +7,8 @@ using UnityEngine.Assertions;
 
 //[RequireComponent(typeof(CharacterController))]
 public class PlayerBehaviour : Avatar {
-
     private InputManager _input;
+    private RespawnPlayer _respawn;
 
     private PickUpStateMachine _pickupStateMachine;
     private ThrowingEndStateMachine _throwingStateMachine;
@@ -60,7 +60,7 @@ public class PlayerBehaviour : Avatar {
         //Set Components;
         #region Components
         _input = GameObject.Find("GameManager").GetComponent<InputManager>();
-
+        _respawn = GameObject.Find("GameManager").GetComponent<RespawnPlayer>();
         _char = this.gameObject.GetComponent<CharacterController>();
         _cameraRotation = this.gameObject.GetComponent<RotateWithMouse>();
         _absoluteTransform = Camera.main.transform;
@@ -304,6 +304,7 @@ public class PlayerBehaviour : Avatar {
     {
         _cameraRotation.AllowRotation = false;
         SetMovementBools(true, false, false);
+        _respawn.AllowRespawn = true;
     }
     #endregion
 
