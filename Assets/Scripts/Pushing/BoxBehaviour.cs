@@ -7,8 +7,7 @@ public class BoxBehaviour : Avatar {
     private Animator _anim;
     private Rigidbody _rb;
 
-    [SerializeField]
-    private float _pushForce = 10.5f; //Base 10.5 F
+    private float _pushForce = 12; //Base 12F
     private float _maxXZVel = 2;
     private float _forwardVelocity;
 
@@ -86,10 +85,6 @@ public class BoxBehaviour : Avatar {
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Level" && !_isPushing) //if THIS box isn't getting pushed and hits a wall --> don't allow movement
-        {
-            //_stopPush = true;
-        }
         if(collision.gameObject.tag == "Box")
         {
             Rigidbody tempRB = collision.gameObject.GetComponent<Rigidbody>();
@@ -114,9 +109,6 @@ public class BoxBehaviour : Avatar {
                 PushBoxToWalking(player);
             }
         }
-
-        if (_stopPush)
-            player.GetComponent<PlayerBehaviour>().AllowDoMovement = false;
     }
 
     private void PushBox()
@@ -131,8 +123,6 @@ public class BoxBehaviour : Avatar {
             _anim.SetFloat("SpeedMirror", 0);
         else
             _anim.SetFloat("SpeedMirror", 1);
-
-
     }
 
     private void WalkingToPushBox(GameObject player)

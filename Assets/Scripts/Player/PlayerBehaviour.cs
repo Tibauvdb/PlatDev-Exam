@@ -52,7 +52,7 @@ public class PlayerBehaviour : Avatar {
     public bool IsKnockedOut { get; set; }
 
     private bool _allowGravity = true;
-    private bool _allowMovementBaseCalculation = true;
+    private bool _allowBaseMovementCalculation = true;
     public bool AllowDoMovement { get; set; }
 
     void Start ()
@@ -122,11 +122,11 @@ public class PlayerBehaviour : Avatar {
         if(_allowGravity)
             ApplyGravity();
 
-        if(_allowMovementBaseCalculation)
-            ApplyMovementBase();
+        if(_allowBaseMovementCalculation)
+            ApplyBaseMovement();
         
         ApplyDragOnGround();
-        //LimitXZVelocity();
+
         Velocity = LimitXZVel(Velocity,_maximumXZVelocity);
         Vector3 XZvel = Vector3.Scale(Velocity, new Vector3(1, 0, 1));
         Vector3 localVelXZ = gameObject.transform.InverseTransformDirection(XZvel);
@@ -143,7 +143,7 @@ public class PlayerBehaviour : Avatar {
     }
 
     //Get relative direction from camera
-    private Vector3 RelativeDirection(Vector3 direction)
+    private Vector3 RelativeDirectionFromCamera(Vector3 direction)
         {
         Quaternion relativeRot = Quaternion.LookRotation(direction);
 
@@ -155,7 +155,6 @@ public class PlayerBehaviour : Avatar {
         {
         if (_char.isGrounded)
             {
-            //Gravity on ground
             Velocity -= Vector3.Project(Velocity, Physics.gravity);
             }
         }
@@ -165,13 +164,12 @@ public class PlayerBehaviour : Avatar {
         {
         if (!_char.isGrounded)
             {
-            //apply gravity when in the air
             Velocity += Physics.gravity * Time.deltaTime;
             }
         }
 
     //Apply movement when player is on the ground
-    private void ApplyMovementBase()
+    private void ApplyBaseMovement()
         {
         if (_char.isGrounded)
             {
@@ -202,14 +200,13 @@ public class PlayerBehaviour : Avatar {
         {
         if (_char.isGrounded)
             {
-            Velocity = Velocity * (1 - _drag * Time.deltaTime); //Same as lerping
+            Velocity = Velocity * (1 - _drag * Time.deltaTime);
             }
         }
 
     //Final movement Function
     private void DoMovement()
         {
-        //do velocity / movement on character controller
         Vector3 movement = Velocity * Time.deltaTime;
         _char.Move(movement);
         }
@@ -217,14 +214,12 @@ public class PlayerBehaviour : Avatar {
     //Pick up Object - Gets called from pickup-able objects
     public void PickUpObject(GameObject pickup)
     {
-        //Enter this script when player wants to pick up object in front of them
         _anim.Play("PickUp", 0);
         //Save current pickup
         _currentPickup = pickup;
         //Allow player to start throwing pickup;
         PickingUp = true;
-        State = States.PickingUp;
-        
+        State = States.PickingUp;        
     }
 
     public void KnockedOut()
@@ -308,11 +303,11 @@ public class PlayerBehaviour : Avatar {
     }
     #endregion
 
-    private void SetMovementBools(bool gravity,bool baseMovement,bool movement)
+    private void SetMovementBools(bool gravity,bool baseMovement,bool DoMovement)
     {
         _allowGravity = gravity;
-        _allowMovementBaseCalculation = baseMovement;
-        AllowDoMovement = movement;
+        _allowBaseMovementCalculation = baseMovement;
+        AllowDoMovement = DoMovement;
     }
 
     //Found On Internet - Not Mine

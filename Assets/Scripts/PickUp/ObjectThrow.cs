@@ -23,8 +23,6 @@ public class ObjectThrow : MonoBehaviour {
     [SerializeField]
     private int _currentStep = 1;
 
-    //private Vector3 _originalPosition;
-
     private float _newX;
     private float _newY;
     private float _newZ;
@@ -32,7 +30,6 @@ public class ObjectThrow : MonoBehaviour {
     private bool _allowCollision = true;
     private bool _colliding = false;
 
-    //private Transform _parentTransform;
     private Vector3 _parentPos;
     private Quaternion _parentRot;
     public bool Throwing = false;
@@ -74,10 +71,7 @@ public class ObjectThrow : MonoBehaviour {
 
         if(Throwing == true && _colliding==false)
         {
-            Throw();
-            AddSteps();
-            _allowCollision = true;
-            _line.enabled = false;
+            ThrowObject();
         }
 	}
     private void OnCollisionEnter(Collision collision)
@@ -93,6 +87,13 @@ public class ObjectThrow : MonoBehaviour {
         }
     }
 
+    private void ThrowObject()
+    {
+        UpdateCubePosition();
+        AddSteps();
+        _allowCollision = true;
+        _line.enabled = false;
+    }
 
     //Calculate distance | this will change when ThrowAngle get increased
     private void CalculateDistance()
@@ -101,7 +102,7 @@ public class ObjectThrow : MonoBehaviour {
     }
 
     //Update the position of the cube according to the parabola
-    public void Throw()
+    public void UpdateCubePosition()
     {
         ////Set new position
         this.gameObject.transform.position = StepPosCalculation(_currentStep);
@@ -140,7 +141,6 @@ public class ObjectThrow : MonoBehaviour {
         return newPos;
     }
   
-
     private void ResetThrow()
     {
         _currentStep = 5;
