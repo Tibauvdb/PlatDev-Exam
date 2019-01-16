@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+//Found in AI - Behaviour Tree | Thought Process 
 public class BaseAIBehaviour : MonoBehaviour {
+
     private INode _rootNode;
 
     public bool IsAIKnockedOut;
@@ -39,8 +41,13 @@ public class BaseAIBehaviour : MonoBehaviour {
                     new ActionNode(KnockedOutTimer)),
                 new SequenceNode(
                     new ConditionNode(AISpecificCondition),
-                    new ActionNode(AISpecificAction)),
+                    new SelectorNode(
+                        new SequenceNode(
+                            new ConditionNode(IsPlayerPushingBox),
+                            new ActionNode(RunAway)),
+                        new ActionNode(AISpecificAction))),
                 new ActionNode(Roaming));
+
 
         StartCoroutine(RunTree());
 	}
@@ -102,7 +109,9 @@ public class BaseAIBehaviour : MonoBehaviour {
     IEnumerator<NodeResult> FollowPlayer()
     {
         //Start Following The Player
+        Debug.Log("Set Player as destination");
         _agent.SetDestination(PlayerPosition);
+
         yield return NodeResult.Running;
     }
 
@@ -117,6 +126,21 @@ public class BaseAIBehaviour : MonoBehaviour {
         yield return NodeResult.Succes;
     }
 
+    bool IsPlayerPushingBox()
+    {
+        return _aiFOV.CheckBoxPushing();
+    }
+
+    IEnumerator<NodeResult> RunAway()
+    {
+        Debug.Log("Player is pushing box - Running away");
+        //Vector3 distToPlayer = this.gameObject.transform.position - PlayerPosition;
+        //Vector3 targetPos = this.gameObject.transform.position + distToPlayer;
+        //_agent.SetDestination(targetPos);
+        RandomDestination();  
+        yield return NodeResult.Running;
+    }
+
     IEnumerator<NodeResult> Roaming()
     {
         if(_agent.remainingDistance <= _agent.stoppingDistance)
@@ -126,19 +150,25 @@ public class BaseAIBehaviour : MonoBehaviour {
 
             if (newDestination >= 99)
             {
-                //Go To random Spot on NavMesh
-                Vector3 dir =this.gameObject.transform.position + ( Random.insideUnitSphere * _maxRoamDistance );
-                NavMeshHit hit;
-                NavMesh.SamplePosition(dir, out hit, Random.Range(0f, _maxRoamDistance), 1);
-
-                Vector3 destination = hit.position;
-
-                _agent.SetDestination(destination);
+                RandomDestination();
             }
 
         }
         
         yield return NodeResult.Succes;
+    }
+
+    private void RandomDestination()
+    {
+        Debug.Log("Roaming");
+        //Go To random Spot on NavMesh
+        Vector3 dir = this.gameObject.transform.position + (Random.insideUnitSphere * _maxRoamDistance);
+        NavMeshHit hit;
+        NavMesh.SamplePosition(dir, out hit, Random.Range(0f, _maxRoamDistance), 1);
+
+        Vector3 destination = hit.position;
+
+        _agent.SetDestination(destination);
     }
 
     public void ResetAgent()
@@ -170,4 +200,5 @@ public class BaseAIBehaviour : MonoBehaviour {
         _aiStateMachine.AIBehaviour = this;
         _aiFOV = this.gameObject.GetComponent<AiFieldOfView>();
     }
+
 }

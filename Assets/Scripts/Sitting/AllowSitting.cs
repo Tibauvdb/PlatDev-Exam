@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//Found in Player Interactions - 3. Bench Sitting 
 public class AllowSitting : MonoBehaviour {
     private InputManager _input;
     private Animator _anim;
@@ -39,12 +41,15 @@ public class AllowSitting : MonoBehaviour {
     {
         if(other.tag == "Player")
         {
-            if (Input.GetButtonDown(_input.A) && other.gameObject.GetComponent<PlayerBehaviour>().State == PlayerBehaviour.States.Walking)
+            if (Input.GetButtonDown(_input.A))
             {
                 if (_allowInteraction && _currSitState == SittingStates.Sitting)
                     _currSitState = SittingStates.SitToStand;
+                if(other.gameObject.GetComponent<PlayerBehaviour>().State == PlayerBehaviour.States.Walking)
+                {
                 _player = other.gameObject;
                 _allowInteraction = true;
+                }
 
             }
         }
@@ -60,6 +65,9 @@ public class AllowSitting : MonoBehaviour {
             case SittingStates.StandToSit:
                 StartSit();
                 break;
+            case SittingStates.Sitting:
+                _player.GetComponent<RotateWithMouse>().AllowRotation = true;
+                break;
             case SittingStates.SitToStand:
                 StartStandingUp();
                 break;
@@ -73,7 +81,7 @@ public class AllowSitting : MonoBehaviour {
         _anim.ResetTrigger("IsStandingUp");
         
         _player.transform.forward = Vector3.Lerp(_player.transform.forward, this.gameObject.transform.forward, Time.deltaTime*2);
-
+        _player.GetComponent<PlayerBehaviour>().FreezePlayer();
         //Check if Animation is done playing
         if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Sitting")) 
         {
@@ -87,6 +95,8 @@ public class AllowSitting : MonoBehaviour {
         //Start Sitting to Standing Animation
         _anim.SetTrigger("IsStandingUp");
         _anim.ResetTrigger("IsSitting");
+
+        _player.GetComponent<PlayerBehaviour>().FreezePlayer();
 
         if (_anim.GetCurrentAnimatorStateInfo(0).IsName("ForwardLocomotion"))
         {

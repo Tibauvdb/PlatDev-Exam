@@ -5,16 +5,12 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-//[RequireComponent(typeof(CharacterController))]
+//Found in Base Mechanics - 1. Locomotion   
 public class PlayerBehaviour : Avatar {
     private InputManager _input;
     private RespawnPlayer _respawn;
 
     private PickUpStateMachine _pickupStateMachine;
-    private ThrowingEndStateMachine _throwingStateMachine;
-    private PushingStateMachine _pushingStateMachine;
-    private StairWalkingStateMachine _stairWalkingStateMachine;
-    private SittingStateMachine _sittingStateMachine;
 
     private RotateWithMouse _cameraRotation;
 
@@ -181,7 +177,6 @@ public class PlayerBehaviour : Avatar {
             Vector3 relativeMov = relativeRot * InputMovementBase;
             Velocity += relativeMov * _acceleration * Time.deltaTime; 
         }
-
     }
 
     //Apply drag when player is on the ground
@@ -297,6 +292,12 @@ public class PlayerBehaviour : Avatar {
         _allowGravity = gravity;
         _allowBaseMovementCalculation = baseMovement;
         AllowDoMovement = DoMovement;
+    }
+
+    public void FreezePlayer()
+    {
+        _cameraRotation.AllowRotation = false;
+        SetMovementBools(false, false, false);
     }
 
     //Found On Internet - Not Mine

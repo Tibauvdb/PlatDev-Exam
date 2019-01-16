@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 public class AllowPickup : MonoBehaviour {
-
+    public bool PlayerInRange { get; set; }
     private Animator _anim;
     private InputManager _input;
 
@@ -26,14 +26,19 @@ public class AllowPickup : MonoBehaviour {
         if (other.gameObject.tag == "Player")
         {
             CheckPlayerState(other.gameObject);
+            PlayerInRange = true;
         }
+        else
+            PlayerInRange = false;
+            
 
-        else if(other.gameObject.tag == "AI" && Thrown == true)
+        if(other.gameObject.tag == "AI" && Thrown == true)
         {
             other.GetComponent<BaseAIBehaviour>().IsAIKnockedOut = true;
             Thrown = false;
         }
     }
+
     private void CheckPlayerState(GameObject player)
     {
         PlayerBehaviour.States state = player.GetComponent<PlayerBehaviour>().State;

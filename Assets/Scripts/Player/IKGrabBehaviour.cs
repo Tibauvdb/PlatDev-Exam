@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class IKGrabBehaviour : MonoBehaviour {
-    //[SerializeField] private bool _ikActive = false;
 
     public Animator Anim { get; set; }
     public Transform PickUp { get; set; }

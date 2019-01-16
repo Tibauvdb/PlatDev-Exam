@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Found in Base Mechanics - 2. Camera 
 public class RotateWithMouse : MonoBehaviour {
     [SerializeField]
     public bool AllowRotation { get; set; }
@@ -88,11 +89,14 @@ public class RotateWithMouse : MonoBehaviour {
 
     private void StandingUpCamera()
     {
+        Debug.Log("Standing Up");
         _lerpValue += Time.deltaTime / 2;
+
         Vector3 currAngle = new Vector3(
-            Mathf.LerpAngle(_camPivot.transform.localRotation.x, 35,_lerpValue),
-            Mathf.LerpAngle(_camPivot.transform.localRotation.y, 0, _lerpValue),
+            Mathf.LerpAngle(_camPivot.transform.localRotation.x, _originalCameraPosition.transform.rotation.x + 35,_lerpValue),
+            Mathf.LerpAngle(_camPivot.transform.localRotation.y, _originalCameraPosition.transform.rotation.y, _lerpValue),
             _camPivot.transform.rotation.z);
+
         _camPivot.transform.eulerAngles = currAngle;
         
         if (_lerpValue >= 1f)
@@ -109,6 +113,6 @@ public class RotateWithMouse : MonoBehaviour {
         rotationCamPivot.x += Input.GetAxis(_input.CamVertical) * -_camRotationSpeed;
         rotationCamPivot.x = PlayerBehaviour.ClampAngle(rotationCamPivot.x, -10, 50);
 
-        _camPivot.localEulerAngles = rotationCamPivot;
+        _camPivot.localEulerAngles = new Vector3(rotationCamPivot.x,_camPivot.localEulerAngles.y,_camPivot.localEulerAngles.z);
     }
 }

@@ -37,9 +37,9 @@ public class AiFieldOfView : MonoBehaviour {
             }
             else
             {
+                Debug.Log("SetPlayerPosition");
                 _aiBehaviour.PlayerPosition = _player.transform.position;
                 return true;
-
             }
         }
         else
@@ -50,5 +50,15 @@ public class AiFieldOfView : MonoBehaviour {
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _aiBehaviour = this.gameObject.GetComponent<BaseAIBehaviour>();
+    }
+
+    public bool CheckBoxPushing()
+    {        
+        if( _player.GetComponent<PlayerBehaviour>().State == PlayerBehaviour.States.PushingBox)
+        {
+            Debug.Log("BoxPushing True");
+            return true;
+        }
+        return false;
     }
 }

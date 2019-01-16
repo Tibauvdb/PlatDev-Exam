@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Found in Player Interactions - 1. Box Pushing - Physics Based Mechanic
 public class BoxBehaviour : Avatar {
     private InputManager _input;
     private Animator _anim;
@@ -58,13 +59,13 @@ public class BoxBehaviour : Avatar {
         {
             Vector3 playerVel = _player.gameObject.GetComponent<PlayerBehaviour>().Velocity;
 
-            if (playerVel.x > 0 || playerVel.z > 0)
+            if (playerVel.x > 0.2f || playerVel.z > 0.2f)
             {
                 other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut = true;
             }
         }
 
-        if(other.gameObject.tag == "PickUp")
+        if(other.gameObject.tag == "PickUp" && other.gameObject.GetComponent<AllowPickup>().PlayerInRange)
         {
             _allowPush = false;
         }
