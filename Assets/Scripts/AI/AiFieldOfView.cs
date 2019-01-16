@@ -37,7 +37,6 @@ public class AiFieldOfView : MonoBehaviour {
             }
             else
             {
-                Debug.Log("SetPlayerPosition");
                 _aiBehaviour.PlayerPosition = _player.transform.position;
                 return true;
             }

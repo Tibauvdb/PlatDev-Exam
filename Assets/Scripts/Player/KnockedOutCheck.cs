@@ -12,7 +12,7 @@ public class KnockedOutCheck : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         //if AI enters
-        if(other.name.Contains("Type01") && other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut == false && _playerBh.State != PlayerBehaviour.States.Sitting)
+        if(other.name.Contains("Type01") && other.gameObject.GetComponent<BaseAIBehaviour>().IsAIKnockedOut == false && _playerBh.State != PlayerBehaviour.States.Sitting && _playerBh.State != PlayerBehaviour.States.PushingBox)
         {
             _playerBh.KnockedOut();
             other.gameObject.transform.Find("AI-Model").GetComponent<Animator>().SetTrigger("IsPunching");

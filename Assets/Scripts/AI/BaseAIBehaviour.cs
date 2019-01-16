@@ -160,7 +160,6 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     private void RandomDestination()
     {
-        Debug.Log("Roaming");
         //Go To random Spot on NavMesh
         Vector3 dir = this.gameObject.transform.position + (Random.insideUnitSphere * _maxRoamDistance);
         NavMeshHit hit;
