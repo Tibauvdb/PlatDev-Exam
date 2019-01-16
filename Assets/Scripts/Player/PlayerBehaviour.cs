@@ -56,7 +56,7 @@ public class PlayerBehaviour : Avatar {
     public bool AllowDoMovement { get; set; }
 
     void Start ()
-        {
+    {
         //Set Components;
         #region Components
         _input = GameObject.Find("GameManager").GetComponent<InputManager>();
@@ -83,7 +83,7 @@ public class PlayerBehaviour : Avatar {
     }
 
     private void Update()
-        {
+    {
         //Get input from Any Horizontal or Vertical Axis
         //Normalize
         InputMovementBase = new Vector3(Input.GetAxis(_input.HorizontalAxis), 0,Input.GetAxis(_input.VerticalAxis)).normalized;  //Used for base movement
@@ -144,35 +144,35 @@ public class PlayerBehaviour : Avatar {
 
     //Get relative direction from camera
     private Vector3 RelativeDirectionFromCamera(Vector3 direction)
-        {
+    {
         Quaternion relativeRot = Quaternion.LookRotation(direction);
 
         return relativeRot.eulerAngles;
-        }
+    }
 
     //Apply gravity when player is on the ground
     private void ApplyGround()
-        {
+    {
         if (_char.isGrounded)
-            {
+        {
             Velocity -= Vector3.Project(Velocity, Physics.gravity);
-            }
         }
+    }
 
     //Apply gravity when player is NOT on the ground
     private void ApplyGravity()
-        {
+    {
         if (!_char.isGrounded)
-            {
+        {
             Velocity += Physics.gravity * Time.deltaTime;
-            }
         }
+    }
 
     //Apply movement when player is on the ground
     private void ApplyBaseMovement()
-        {
+    {
         if (_char.isGrounded)
-            {
+        {
             //get relative rotation from camera
             Vector3 xzForward = Vector3.Scale(_absoluteTransform.forward, new Vector3(1, 0, 1));
             Quaternion relativeRot = Quaternion.LookRotation(xzForward);
@@ -180,36 +180,25 @@ public class PlayerBehaviour : Avatar {
             //move in relative direction
             Vector3 relativeMov = relativeRot * InputMovementBase;
             Velocity += relativeMov * _acceleration * Time.deltaTime; 
-            }
-
         }
 
-    //Limit player speed when moving
-    private void LimitXZVelocity()
-        {
-        Vector3 yVel = Vector3.Scale(Velocity, Vector3.up);
-        Vector3 xzVel = Vector3.Scale(Velocity, new Vector3(1, 0, 1));
-
-        xzVel = Vector3.ClampMagnitude(xzVel, _maximumXZVelocity);
-
-        Velocity = xzVel + yVel;
-        }
+    }
 
     //Apply drag when player is on the ground
     private void ApplyDragOnGround()
-        {
+    {
         if (_char.isGrounded)
-            {
+        {
             Velocity = Velocity * (1 - _drag * Time.deltaTime);
-            }
         }
+    }
 
     //Final movement Function
     private void DoMovement()
-        {
+    {
         Vector3 movement = Velocity * Time.deltaTime;
         _char.Move(movement);
-        }
+    }
 
     //Pick up Object - Gets called from pickup-able objects
     public void PickUpObject(GameObject pickup)

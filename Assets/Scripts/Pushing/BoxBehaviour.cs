@@ -88,9 +88,10 @@ public class BoxBehaviour : Avatar {
         if(collision.gameObject.tag == "Box")
         {
             Rigidbody tempRB = collision.gameObject.GetComponent<Rigidbody>();
-
-            if(_isPushing)
-                tempRB.AddForce(_player.transform.forward * _pushForce, ForceMode.Force);
+            if (_isPushing && CheckSecondBoxPosition())
+            {
+                tempRB.AddForce(_player.transform.forward * _pushForce, ForceMode.Force);               
+            }
         }
     }
 
@@ -181,5 +182,17 @@ public class BoxBehaviour : Avatar {
             _lerpForward = false;
             _lerpCounter = 0;
         }
+    }
+
+    private bool CheckSecondBoxPosition()
+    {
+        bool isInFront = false;
+
+        RaycastHit[] hit;
+        hit = Physics.RaycastAll(this.gameObject.transform.position, _player.transform.forward, 5);
+        if (hit.Length>1 && hit[hit.Length - 1].transform.gameObject.tag == this.gameObject.tag)
+            isInFront = true;
+
+        return isInFront;
     }
 }
