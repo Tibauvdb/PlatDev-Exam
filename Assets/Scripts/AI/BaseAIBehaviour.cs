@@ -56,6 +56,8 @@ public class BaseAIBehaviour : MonoBehaviour {
     {
         _anim.SetFloat("HorizontalVelocity", -_agent.velocity.z * this.gameObject.transform.forward.z);
         _anim.SetFloat("VerticalVelocity", _agent.velocity.x * this.gameObject.transform.forward.x);
+
+        CheckNavMeshLink();
     }
 
     IEnumerator RunTree()
@@ -189,6 +191,14 @@ public class BaseAIBehaviour : MonoBehaviour {
             AISpecificAction = LookAtPlayer;
 
         }
+    }
+
+    private void CheckNavMeshLink()
+    {
+        if (_agent.isOnOffMeshLink)
+            _anim.SetBool("IsJumping", true);
+        else
+            _anim.SetBool("IsJumping", false);
     }
 
     private void SetComponents()

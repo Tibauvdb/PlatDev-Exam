@@ -36,11 +36,11 @@ public class RotateWithMouse : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         _currState = _playerBH.State;
-
         if (AllowRotation)
             RotateCamera();
-
         RaiseCamera();
+
+        Debug.Log(_camPivot.transform.localEulerAngles);
     }
 
     private void RotateCamera()
@@ -93,11 +93,11 @@ public class RotateWithMouse : MonoBehaviour {
         _lerpValue += Time.deltaTime / 2;
 
         Vector3 currAngle = new Vector3(
-            Mathf.LerpAngle(_camPivot.transform.localRotation.x, _originalCameraPosition.transform.rotation.x + 35,_lerpValue),
-            Mathf.LerpAngle(_camPivot.transform.localRotation.y, _originalCameraPosition.transform.rotation.y, _lerpValue),
-            _camPivot.transform.rotation.z);
+            Mathf.LerpAngle(_camPivot.transform.localEulerAngles.x,  35,_lerpValue),
+            Mathf.LerpAngle(_camPivot.transform.localEulerAngles.y, 0, _lerpValue),
+            _camPivot.transform.localEulerAngles.z);
 
-        _camPivot.transform.eulerAngles = currAngle;
+        _camPivot.transform.localEulerAngles = currAngle;
         
         if (_lerpValue >= 1f)
         {

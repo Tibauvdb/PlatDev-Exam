@@ -9,6 +9,7 @@ public class ObjectThrow : MonoBehaviour {
 
 
     private AllowPickup _allowPickup;
+    private ThrowableBehaviour _throw;
     private LineRenderer _line;
 
     private float _v0 = 10; //Start Velocity
@@ -39,6 +40,7 @@ public class ObjectThrow : MonoBehaviour {
     void Start () {
 
         _allowPickup = this.gameObject.GetComponent<AllowPickup>();
+        _throw = this.gameObject.GetComponent<ThrowableBehaviour>();
         _line = this.gameObject.GetComponent<LineRenderer>();
         _line.enabled = true;
 
@@ -82,8 +84,8 @@ public class ObjectThrow : MonoBehaviour {
             //if Object collides with something - Stop movement
             _colliding = true;
             ResetThrow();
-            _allowPickup.Thrown = false;
-            _allowPickup.enabled = true;
+            _throw.Thrown = false;
+            _allowPickup.enabled = false;
             this.gameObject.GetComponent<ObjectThrow>().enabled = false;
         }
     }

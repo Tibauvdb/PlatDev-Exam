@@ -24,9 +24,10 @@ GameObject:
   - component: {fileID: 65506234951409582}
   - component: {fileID: 65383552209245568}
   - component: {fileID: 54097280358501614}
+  - component: {fileID: 114432678364838388}
+  - component: {fileID: 114632146752327400}
   - component: {fileID: 114755018485085552}
   - component: {fileID: 120517667247609808}
-  - component: {fileID: 114432678364838388}
   m_Layer: 11
   m_Name: ThrowCube
   m_TagString: PickUp
@@ -139,7 +140,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acf9260ce88b15e428c9eab76d9f9f6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Thrown: 0
+--- !u!114 &114632146752327400
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1139742142579128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b968096c0427ad4e85d0e27d84fdbef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114755018485085552
 MonoBehaviour:
   m_ObjectHideFlags: 1
