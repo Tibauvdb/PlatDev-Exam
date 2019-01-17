@@ -7,6 +7,7 @@ public class AiFieldOfView : MonoBehaviour {
 
     private GameObject _player;
 
+    private float FieldOfView = 120; //Field of View Cone
     private int _visionDistance = 5; //5m radius aroundAI
     private int _layerMask = 1 << 11; //Ignore pickups layer
 
@@ -23,26 +24,38 @@ public class AiFieldOfView : MonoBehaviour {
     {
         //Check if player is in FOV
         SetFields();
+
+        //Check if player is in Vision Distance
         if (Vector3.Distance(this.gameObject.transform.position, _player.transform.position) <= _visionDistance)
         {
-            _currentState = _player.GetComponent<PlayerBehaviour>().State;
-
-            RaycastHit hit;
-            if (Physics.Linecast(this.gameObject.transform.position, _player.transform.position, out hit, _layerMask) || _currentState == PlayerBehaviour.States.Sitting || _currentState == PlayerBehaviour.States.KnockedOut)
+            //Check if Player is in Field of View Cone (90 Degrees from forward)
+            Vector3 directionToPlayer = _player.transform.position - this.gameObject.transform.position;
+            if (Quaternion.Angle(this.gameObject.transform.rotation, Quaternion.LookRotation(directionToPlayer)) < (FieldOfView / 2))
             {
-                //Something in between player & AI
-                if (allowReset && _aiBehaviour.IsAIFollowing)
-                    _aiBehaviour.ResetAgent();
-                return false;
+                return CheckLineOfSight(allowReset);
             }
-            else
-            {
-                _aiBehaviour.PlayerPosition = _player.transform.position;
-                return true;
-            }
+            return false;
         }
         else
             return false;
+    }
+
+    private bool CheckLineOfSight(bool allowReset)
+    {
+        _currentState = _player.GetComponent<PlayerBehaviour>().State;
+        RaycastHit hit;
+        if (Physics.Linecast(this.gameObject.transform.position, _player.transform.position, out hit, _layerMask) || _currentState == PlayerBehaviour.States.Sitting || _currentState == PlayerBehaviour.States.KnockedOut)
+        {
+            //Something in between player & AI
+            if (allowReset && _aiBehaviour.IsAIFollowing)
+                _aiBehaviour.ResetAgent();
+            return false;
+        }
+        else
+        {
+            _aiBehaviour.PlayerPosition = _player.transform.position;
+            return true;
+        }
     }
 
     private void SetFields()

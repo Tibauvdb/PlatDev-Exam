@@ -150,7 +150,7 @@ public class BaseAIBehaviour : MonoBehaviour {
 
             float newDestination = Random.Range(0, 100);
 
-            if (newDestination >= 99)
+            if (newDestination >= 99) //1% Chance to pick new location
             {
                 RandomDestination();
             }

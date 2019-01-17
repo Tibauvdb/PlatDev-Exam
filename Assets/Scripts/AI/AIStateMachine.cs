@@ -5,6 +5,8 @@ using UnityEngine;
 public class AIStateMachine : StateMachineBehaviour {
 
     public BaseAIBehaviour AIBehaviour { get; set; }
+    
+    private float _weightCounter = 0;
 
 	// OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
 	override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -17,14 +19,14 @@ public class AIStateMachine : StateMachineBehaviour {
         {
             SetLookAtPos(animator,aiLookPos);
             //Make AI point at character
-            animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-            animator.SetIKPosition(AvatarIKGoal.LeftHand,aiLookPos);          
+            LerpHandIK(animator, aiLookPos);         
         }
         else if (AIBehaviour.IsAILooking == false && AIBehaviour.name.Contains("Type02"))
         {
             //Reset left hand weight if AI loses track of player
             animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0);
         }
+
 	}
 
     public void SetLookAtPos(Animator animator, Vector3 lookAt)
@@ -32,5 +34,12 @@ public class AIStateMachine : StateMachineBehaviour {
         //When following player, make head follow player
         animator.SetLookAtWeight(1);
         animator.SetLookAtPosition(lookAt);
+    }
+
+    private void LerpHandIK(Animator animator,Vector3 aiLookPos)
+    {
+        _weightCounter += Time.deltaTime;
+        animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, _weightCounter);
+        animator.SetIKPosition(AvatarIKGoal.LeftHand, aiLookPos);
     }
 }
