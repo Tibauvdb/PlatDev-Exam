@@ -19,7 +19,7 @@ public class AIStateMachine : StateMachineBehaviour {
         {
             SetLookAtPos(animator,aiLookPos);
             //Make AI point at character
-            LerpHandIK(animator, aiLookPos);         
+            LerpHandIK(animator, aiLookPos);        
         }
         else if (AIBehaviour.IsAILooking == false && AIBehaviour.name.Contains("Type02"))
         {

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AiFieldOfView : MonoBehaviour {
+[RequireComponent(typeof(BaseAIBehaviour))]
+public class AiFieldOfView : MonoBehaviour {   
     private BaseAIBehaviour _aiBehaviour;
 
     private GameObject _player;

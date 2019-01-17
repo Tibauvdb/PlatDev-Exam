@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
+//No Longer Used - Replaced by Field Of View Script
 public class FollowPlayer : MonoBehaviour {
 
     private Transform _player;

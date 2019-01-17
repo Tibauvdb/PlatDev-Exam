@@ -127,6 +127,7 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     IEnumerator<NodeResult> LookAtPlayer()
     {
+        //Affects StateMachine Behaviour
         yield return NodeResult.Succes;
     }
 

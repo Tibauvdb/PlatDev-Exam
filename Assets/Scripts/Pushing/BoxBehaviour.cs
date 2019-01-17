@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Found in Player Interactions - 1. Box Pushing - Physics Based Mechanic
+[RequireComponent(typeof(Rigidbody))]
 public class BoxBehaviour : Avatar {
     private InputManager _input;
     private Animator _anim;
