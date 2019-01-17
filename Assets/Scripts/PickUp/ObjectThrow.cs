@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Assertions;
 
 //Found in Player Interactions - 2. Object Throwing - Physics Based Mechanic
+[RequireComponent(typeof(LineRenderer))]
 public class ObjectThrow : MonoBehaviour {
 
 
@@ -42,6 +43,7 @@ public class ObjectThrow : MonoBehaviour {
         _allowPickup = this.gameObject.GetComponent<AllowPickup>();
         _throw = this.gameObject.GetComponent<ThrowableBehaviour>();
         _line = this.gameObject.GetComponent<LineRenderer>();
+        _line.positionCount = 0;
         _line.enabled = true;
 
         //Set _g to downwards gravity in scene | 9.81 [m/s2]

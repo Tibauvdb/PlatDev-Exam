@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 
 //Found in AI - Behaviour Tree | Thought Process 
+[RequireComponent(typeof(AiFieldOfView))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class BaseAIBehaviour : MonoBehaviour {
 
     private INode _rootNode;
@@ -22,8 +24,8 @@ public class BaseAIBehaviour : MonoBehaviour {
     private Animator _anim;
     private AIStateMachine _aiStateMachine;
 
-    public  ConditionNode.Condition AISpecificCondition;
-    public ActionNode.Action AISpecificAction;
+    public  ConditionNode.Condition AISpecificCondition { get; set; }
+    public ActionNode.Action AISpecificAction { get; set; }
 
     private AiFieldOfView _aiFOV;
 
@@ -54,8 +56,8 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     private void Update()
     {
-        _anim.SetFloat("HorizontalVelocity", -_agent.velocity.z * this.gameObject.transform.forward.z);
-        _anim.SetFloat("VerticalVelocity", _agent.velocity.x * this.gameObject.transform.forward.x);
+        _anim.SetFloat("HorizontalVelocity", _agent.velocity.z);
+        _anim.SetFloat("VerticalVelocity", -_agent.velocity.x);
 
         CheckNavMeshLink();
     }
@@ -130,16 +132,16 @@ public class BaseAIBehaviour : MonoBehaviour {
 
     bool IsPlayerPushingBox()
     {
-        return _aiFOV.CheckBoxPushing();
+        return _aiFOV.CheckBoxPushing();        
     }
 
     IEnumerator<NodeResult> RunAway()
     {
-        Debug.Log("Player is pushing box - Running away");
-        //Vector3 distToPlayer = this.gameObject.transform.position - PlayerPosition;
-        //Vector3 targetPos = this.gameObject.transform.position + distToPlayer;
-        //_agent.SetDestination(targetPos);
-        RandomDestination();  
+        _agent.ResetPath();
+        Vector3 distToPlayer = this.gameObject.transform.position - PlayerPosition;
+        Vector3 targetPos = this.gameObject.transform.position + distToPlayer;
+        _agent.SetDestination(targetPos);
+
         yield return NodeResult.Running;
     }
 
@@ -147,7 +149,6 @@ public class BaseAIBehaviour : MonoBehaviour {
     {
         if(_agent.remainingDistance <= _agent.stoppingDistance)
         {
-
             float newDestination = Random.Range(0, 100);
 
             if (newDestination >= 99) //1% Chance to pick new location

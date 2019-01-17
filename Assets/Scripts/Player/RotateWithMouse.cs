@@ -39,8 +39,6 @@ public class RotateWithMouse : MonoBehaviour {
         if (AllowRotation)
             RotateCamera();
         RaiseCamera();
-
-        Debug.Log(_camPivot.transform.localEulerAngles);
     }
 
     private void RotateCamera()

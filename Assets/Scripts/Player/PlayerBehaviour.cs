@@ -5,7 +5,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-//Found in Base Mechanics - 1. Locomotion   
+//Found in Base Mechanics - 1. Locomotion  
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(RotateWithMouse))]
 public class PlayerBehaviour : Avatar {
     private InputManager _input;
     private RespawnPlayer _respawn;
@@ -68,13 +70,6 @@ public class PlayerBehaviour : Avatar {
 
         //Set Base State
         State = States.Walking;
-
-        #region Dependencies
-        //dependency error if charactercontroller is not attached
-        #if DEBUG
-        Assert.IsNotNull(_char, "DEPENDENCY ERROR: CharacterController is missing from PlayerBehaviour");
-        #endif
-        #endregion
 
     }
 

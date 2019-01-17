@@ -25,6 +25,7 @@ public class AIStateMachine : StateMachineBehaviour {
         {
             //Reset left hand weight if AI loses track of player
             animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0);
+            _weightCounter = 0;
         }
 
 	}
